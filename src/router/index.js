@@ -56,7 +56,7 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/1111',
     component: Layout,
     redirect: '/example/table',
     name: 'Example',
@@ -73,6 +73,28 @@ export const constantRoutes = [
         name: 'Tree',
         component: () => import('@/views/tree/index'),
         meta: { title: 'Tree', icon: 'tree' }
+      }
+    ]
+  },
+
+  {
+    path: '/fastTemplate',
+    component: Layout,
+    redirect: '/fastTemplate/index',
+    name: 'fastTemplate',
+    meta: { title: 'fastTemplate', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: '/fastTemplate/index',
+        name: 'fastTemplate-index',
+        component: () => import('@/views/fastTemplate/index'),
+        meta: { title: 'fastTemplate-index', icon: 'table' }
+      },
+      {
+        path: '/fastTemplate/ImgUpload',
+        name: 'fastTemplate-ImgUpload',
+        component: () => import('@/views/fastTemplate/ImgUpload/index'),
+        meta: { title: 'ImgUpload', icon: 'tree' }
       }
     ]
   },

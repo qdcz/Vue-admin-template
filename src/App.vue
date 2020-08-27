@@ -9,3 +9,6 @@ export default {
   name: 'App'
 }
 </script>
+<style lang="less">
+ @import url('./Static/Css/pub.less');
+</style>
