@@ -94,7 +94,19 @@ export const constantRoutes = [
         path: '/fastTemplate/ImgUpload',
         name: 'fastTemplate-ImgUpload',
         component: () => import('@/views/fastTemplate/ImgUpload/index'),
-        meta: { title: 'ImgUpload', icon: 'tree' }
+        meta: { title: 'ImgUpload', icon: 'UploadImg' }
+      },
+      {
+        path: '/fastTemplate/formValidate',
+        name: 'fastTemplate-formValidate',
+        component: () => import('@/views/fastTemplate/formValidate/index'),
+        meta: { title: 'formValidate', icon: 'formValidate' }
+      },
+      {
+        path: '/fastTemplate/Table',
+        name: 'fastTemplate-Table',
+        component: () => import('@/views/fastTemplate/Table/index'),
+        meta: { title: 'Table', icon: 'table' }
       }
     ]
   },
