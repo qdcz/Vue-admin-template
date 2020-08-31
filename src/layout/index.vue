@@ -90,4 +90,8 @@ export default {
   .mobile .fixed-header {
     width: 100%;
   }
+
+  .app-wrapper >>> .main-container{
+    font-size: 10px;
+  }
 </style>

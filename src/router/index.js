@@ -30,177 +30,249 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
+export const constantRoutes = [{
+  path: '/login',
+  component: () => import('@/views/login/index'),
+  hidden: true
+},
 
-  {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
+{
+  path: '/404',
+  component: () => import('@/views/404'),
+  hidden: true
+},
 
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
-  },
-
-  {
-    path: '/1111',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
-
-  {
-    path: '/fastTemplate',
-    component: Layout,
-    redirect: '/fastTemplate/index',
-    name: 'fastTemplate',
-    meta: { title: 'fastTemplate', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: '/fastTemplate/index',
-        name: 'fastTemplate-index',
-        component: () => import('@/views/fastTemplate/index'),
-        meta: { title: 'fastTemplate-index', icon: 'table' }
-      },
-      {
-        path: '/fastTemplate/ImgUpload',
-        name: 'fastTemplate-ImgUpload',
-        component: () => import('@/views/fastTemplate/ImgUpload/index'),
-        meta: { title: 'ImgUpload', icon: 'UploadImg' }
-      },
-      {
-        path: '/fastTemplate/formValidate',
-        name: 'fastTemplate-formValidate',
-        component: () => import('@/views/fastTemplate/formValidate/index'),
-        meta: { title: 'formValidate', icon: 'formValidate' }
-      },
-      {
-        path: '/fastTemplate/Table',
-        name: 'fastTemplate-Table',
-        component: () => import('@/views/fastTemplate/Table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      }
-    ]
-  },
-
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
-
-  {
-    path: '/nested',
-    component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+{
+  path: '/',
+  component: Layout,
+  redirect: '/dashboard',
+  children: [{
+    path: 'dashboard',
+    name: 'Dashboard',
+    component: () => import('@/views/dashboard/index'),
     meta: {
-      title: 'Nested',
-      icon: 'nested'
+      title: 'Dashboard',
+      icon: 'dashboard'
+    }
+  }]
+},
+
+{
+  path: '/1111',
+  component: Layout,
+  redirect: '/example/table',
+  name: 'Example',
+  meta: {
+    title: 'Example',
+    icon: 'el-icon-s-help'
+  },
+  children: [{
+    path: 'table',
+    name: 'Table',
+    component: () => import('@/views/table/index'),
+    meta: {
+      title: 'Table',
+      icon: 'table'
+    }
+  },
+  {
+    path: 'tree',
+    name: 'Tree',
+    component: () => import('@/views/tree/index'),
+    meta: {
+      title: 'Tree',
+      icon: 'tree'
+    }
+  }
+  ]
+},
+
+/** ************************************************快速模板部分******************************************************************************/
+{
+  path: '/fastTemplate',
+  component: Layout,
+  redirect: '/fastTemplate/index',
+  name: 'fastTemplate',
+  meta: {
+    title: '快速模板',
+    icon: 'el-icon-s-help'
+  },
+  children: [{
+    path: '/fastTemplate/index',
+    name: 'fastTemplate-index',
+    component: () => import('@/views/fastTemplate/index'),
+    meta: {
+      title: 'fastTemplate-index',
+      icon: 'table'
+    }
+  },
+  {
+    path: '/fastTemplate/ImgUpload',
+    name: 'fastTemplate-ImgUpload',
+    component: () => import('@/views/fastTemplate/ImgUpload/index'),
+    meta: {
+      title: '图片上传',
+      icon: 'UploadImg'
+    }
+  },
+  {
+    path: '/fastTemplate/formValidate',
+    name: 'fastTemplate-formValidate',
+    component: () => import('@/views/fastTemplate/formValidate/index'),
+    meta: {
+      title: '表单验证',
+      icon: 'formValidate'
+    }
+  },
+  {
+    path: '/fastTemplate/Table',
+    name: 'fastTemplate-Table',
+    component: () => import('@/views/fastTemplate/Table/index'),
+    meta: {
+      title: '表格',
+      icon: 'table'
+    }
+  }
+  ]
+},
+
+/** ************************************************阿洋网盘后端部分******************************************************************************/
+{
+  path: '/YangPan',
+  component: Layout,
+  redirect: '/YangPan/AppUpdate/AppUpdateList',
+  name: 'AppUpdateList',
+  meta: {
+    title: '洋盘',
+    icon: 'el-icon-s-help'
+  },
+  children: [{
+    path: '/YangPan/AppUpdate/AppUpdateList',
+    name: 'AppUpdateList',
+    component: () => import('@/views/YangPan/AppUpdate/AppUpdateList'),
+    meta: {
+      title: 'APP版本管理',
+      icon: 'UploadImg'
+    }
+  }, {
+    path: '/fastTemplate/ImgUpload',
+    name: 'fastTemplate-ImgUpload',
+    component: () => import('@/views/fastTemplate/ImgUpload/index'),
+    meta: {
+      title: '图片上传',
+      icon: 'UploadImg'
+    }
+  }]
+},
+{
+  path: '/form',
+  component: Layout,
+  children: [{
+    path: 'index',
+    name: 'Form',
+    component: () => import('@/views/form/index'),
+    meta: {
+      title: 'Form',
+      icon: 'form'
+    }
+  }]
+},
+
+{
+  path: '/nested',
+  component: Layout,
+  redirect: '/nested/menu1',
+  name: 'Nested',
+  meta: {
+    title: 'Nested',
+    icon: 'nested'
+  },
+  children: [{
+    path: 'menu1',
+    component: () => import('@/views/nested/menu1/index'), // Parent router-view
+    name: 'Menu1',
+    meta: {
+      title: 'Menu1'
     },
-    children: [
-      {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+    children: [{
+      path: 'menu1-1',
+      component: () => import('@/views/nested/menu1/menu1-1'),
+      name: 'Menu1-1',
+      meta: {
+        title: 'Menu1-1'
+      }
+    },
+    {
+      path: 'menu1-2',
+      component: () => import('@/views/nested/menu1/menu1-2'),
+      name: 'Menu1-2',
+      meta: {
+        title: 'Menu1-2'
+      },
+      children: [{
+        path: 'menu1-2-1',
+        component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
+        name: 'Menu1-2-1',
+        meta: {
+          title: 'Menu1-2-1'
+        }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
+        path: 'menu1-2-2',
+        component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
+        name: 'Menu1-2-2',
+        meta: {
+          title: 'Menu1-2-2'
+        }
       }
+      ]
+    },
+    {
+      path: 'menu1-3',
+      component: () => import('@/views/nested/menu1/menu1-3'),
+      name: 'Menu1-3',
+      meta: {
+        title: 'Menu1-3'
+      }
+    }
     ]
   },
-
   {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
-    ]
-  },
+    path: 'menu2',
+    component: () => import('@/views/nested/menu2/index'),
+    name: 'Menu2',
+    meta: {
+      title: 'menu2'
+    }
+  }
+  ]
+},
 
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+{
+  path: 'external-link',
+  component: Layout,
+  children: [{
+    path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
+    meta: {
+      title: 'External Link',
+      icon: 'link'
+    }
+  }]
+},
+
+// 404 page must be placed at the end !!!
+{
+  path: '*',
+  redirect: '/404',
+  hidden: true
+}
 ]
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRoutes
 })
 

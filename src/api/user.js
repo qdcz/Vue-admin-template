@@ -1,10 +1,11 @@
 import request from '@/utils/request'
 
 export function login(data) {
+  const R = Object.assign({ type: 'APILogin' }, data)
   return request({
-    url: '/vue-admin-template/user/login',
+    url: '/YangPan',
     method: 'post',
-    data
+    data: R
   })
 }
 

@@ -54,3 +54,16 @@ export default {
   }
 }
 </script>
+<style>
+  .el-menu-item{
+    font-size: 12px;
+    padding: 0 10px;
+  }
+  .el-submenu__title{
+    font-size: 12px;
+    padding: 0 10px;
+  }
+  .el-submenu .el-menu-item{
+    padding: 0;
+  }
+</style>
