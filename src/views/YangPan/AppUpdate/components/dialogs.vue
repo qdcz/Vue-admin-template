@@ -39,7 +39,6 @@
             <div v-if="licenseImageUrl.length >= 1" slot="tip" class="down-list" style="padding:10px 0; line-height: 1;">
               <div class="first-line">
                 <div style="display: flex; align-items: center;">
-                  <!-- <i class="el-icon-tickets" /> -->
                   <div>{{ up_filename }}</div>
                 </div>
                 <div v-if="progress_wid != '100%'">{{ progress_wid }}</div>
@@ -49,7 +48,7 @@
             </div>
           </el-upload>
         </el-form-item>
-        <el-button class="submit-bth" type="primary" @click="onSubmit('form')">{{ infoList._id ? '更新' : '发布' }}</el-button>
+        <el-button class="submit-bth" type="primary" @click="onSubmit('form')">{{ dialogInfo._id ? '更新' : '发布' }}</el-button>
       </el-form>
     </el-dialog>
   </div>
@@ -59,9 +58,9 @@
 // const COS = require('cos-js-sdk-v5')
 const OSS = require('ali-oss')
 import { API$GetSts } from '../../../../api/YangPan/OSS.js'
-import { API$AddUpdateVersion } from '../../../../api/YangPan/UploadApp.js'
+import { API$AddUpdateVersion, API$UpdVersiont } from '../../../../api/YangPan/UploadApp.js'
 export default {
-  props: ['isshowDialogs', 'infoList'],
+  props: ['isshowDialogs', 'dialogInfo'],
   data() {
     return {
       tengxun_cos: '',
@@ -88,12 +87,12 @@ export default {
     }
   },
   watch: {
-    infoList() {
-      const { Os, forceUpdate, Version, content, DownUrl } = this.infoList
-      this.form = { Os, forceUpdate, Version, content, DownUrl }
-      this.progress_wid = this.infoList.progress_wid
+    dialogInfo() {
+      const { Os, forceUpdate, Version, content, DownUrl, AppId } = this.dialogInfo
+      this.form = { Os, forceUpdate, Version, content, DownUrl, AppId }
+      this.progress_wid = this.dialogInfo.progress_wid
       this.up_filename = DownUrl
-      this.licenseImageUrl = this.infoList.licenseImageUrl
+      this.licenseImageUrl = this.dialogInfo.licenseImageUrl
     }
   },
   async created() {
@@ -118,7 +117,7 @@ export default {
               spinner: 'el-icon-loading',
               background: 'rgba(0, 0, 0, 0.7)'
             })
-            this.infoList._id ? this.UpdAPI() : this.AddAPI()
+            this.dialogInfo._id ? this.UpdAPI() : this.AddAPI()
           } catch (e) {
             this.$message.error(e)
           } finally {
@@ -147,11 +146,14 @@ export default {
     },
     // 更新数据
     async UpdAPI() {
-      const json = Object.assign({ _id: this.infoList._id }, this.form)
+      const json = Object.assign({ _id: this.dialogInfo._id }, this.form)
       try {
-        const res = await UpdUpdate(json)
-        if (res.data.code == 200) {
-          this.$message(res.data.msg)
+        const { code, msg } = await API$UpdVersiont(json)
+        if (code === 200) {
+          this.$message({
+            message: msg,
+            type: 'success'
+          })
           this.dialogClose()
           this.$emit('updateList')
         }
@@ -165,11 +167,11 @@ export default {
     async singleFileChange(file, fileList) {
       const name = file.name.slice(0, file.name.match(/[^\.]\w*$/).index - 1)
       const type = file.name.match(/[^\.]\w*$/)[0]
-      // if (!['apk', 'wgt'].includes(type)) {
-      //   this.licenseImageUrl = []
-      //   this.$message.error('上传文件格式不支持!,只支持apk和wgt文件')
-      //   return
-      // }
+      if (!['apk', 'wgt'].includes(type)) {
+        this.licenseImageUrl = []
+        this.$message.error('上传文件格式不支持!,只支持apk和wgt文件')
+        return
+      }
       if (!(file.size / 1024 / 1024 < 100)) {
         this.licenseImageUrl = []
         return this.$message.error('上传文件大小不能超过 100MB!')
@@ -208,7 +210,6 @@ export default {
         })
         if (res.res.status === 200) {
           this.form.DownUrl = res.name
-          // this.licenseImageUrl.push(res.name)
         }
       } catch (e) {
         console.log(e)
@@ -246,7 +247,7 @@ export default {
     },
     dialogClose() {
       this.$emit('update:isshowDialogs', false)
-      this.$emit('update:infoList', {
+      this.$emit('update:dialogInfo', {
         licenseImageUrl: [],
         progress_wid: '0%'
       })

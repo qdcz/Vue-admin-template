@@ -8,8 +8,8 @@
         <el-form-item label="版本更新内容" prop="content"><el-input v-model="QuerySelect.content" clearable size="mini" placeholder="请输入版本更新内容" /></el-form-item>
         <el-form-item label="强制更新">
           <el-select v-model="QuerySelect.forceUpdate" clearable style="width:150px" placeholder="是否强制更新">
-            <el-option :value="0" label="是" />
-            <el-option :value="1" label="否" />
+            <el-option value="YES" label="是" />
+            <el-option value="NO" label="否" />
           </el-select>
         </el-form-item>
         <el-form-item label="使用状态" placeholder="选择使用状态">
@@ -19,9 +19,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发布时间">
-          <el-date-picker v-model="listQuery.publishBeginTime" style="width: 150px;" clearable type="date" />
+          <el-date-picker v-model="QuerySelect.publishBeginTime" style="width: 150px;" clearable type="date" />
           -
-          <el-date-picker v-model="listQuery.publishEndTime" style="width: 150px;" clearable type="date" />
+          <el-date-picker v-model="QuerySelect.publishEndTime" style="width: 150px;" clearable type="date" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="onSelect">查询</el-button>
@@ -32,7 +32,7 @@
     </div>
 
     <!-- 指定当前使用的版本 -->
-    <el-row type="flex" class="row-bg" justify="start" align="middle" :gutter="10">
+    <el-row v-if="false" type="flex" class="row-bg" justify="start" align="middle" :gutter="10">
       <el-col :span="2"><div>Android版本</div></el-col>
       <el-col :span="4">
         <el-select v-model="CurrentUse_And" placeholder="当前使用的版本,慎重操作" style="padding: 10px 0; float: right;" @change="onSelCurrUse_And">
@@ -47,16 +47,15 @@
       </el-col>
     </el-row>
     <!-- 添加编辑的dialog -->
-    <add-dialog :isshow-dialogs.sync="isshowDialogs" :info-list.sync="infoList" @updateList="getLists" />
+    <add-dialog :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
     <!-- 表格 -->
-    <tables :list="DataList" :list-loading.sync="listLoading" />
+    <tables class="mt20" :list="DataList" :list-loading.sync="listLoading" :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
     <!-- 分页器 -->
-    <div class="pagination-container">
+    <div class=" mt20">
       <el-pagination
-        background
-        :current-page="listQuery.pageNum"
-        :page-sizes="[10, 20]"
-        :page-size="listQuery.pageSize"
+        :current-page="QuerySelect.pageNum"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="QuerySelect.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         @size-change="handleSizeChange"
@@ -67,10 +66,6 @@
 </template>
 
 <script>
-// import { getAppList, delApps, selAppList, delApp, SetCurrentUse, getCurrentUse, CheckUpdate } from '@/api/app'
-// import { parseTime, checkDateRange } from '@/utils'
-// import Detail from './components/appDetail'
-// import dialogs from './dialogs.vue'
 import { API$UpdateVersionList } from '../../../api/YangPan/UploadApp.js'
 import tables from './components/Tables.vue'
 import addDialog from './components/dialogs.vue'
@@ -82,10 +77,8 @@ export default {
       lists: [], // unicloud
       CurrentUse_IOS: '', // 当前选择使用的IOS版本
       CurrentUse_And: '',
-      infoList: '', // 查看详情传给弹窗的数据
 
       listLoading: false,
-      listQuery: {},
       QuerySelect: {
         // 条件查询参数
         pageNum: 0,
@@ -98,14 +91,13 @@ export default {
         begin_createTime: '',
         end_createTime: ''
       },
-      total: null, // 分页器总数
+      total: 0, // 分页器总数
       isshowDialogs: false, // 是否显示发布弹窗
-      DataList: [] // 表格数据
+      DataList: [], // 表格数据
+      DialogInfo: '' // 表格内查看编辑带给dialog的数据
     }
   },
   created() {
-    // this.listQuery = Object.assign({}, this.temp)
-    // this.handleReset();
     this.getLists()
   },
   methods: {
@@ -138,54 +130,22 @@ export default {
       this.QuerySelect.pageNum = val - 1
       this.getLists()
     },
-
-    getList() {
-      if (!checkDateRange(this.listQuery.beginTime, this.listQuery.endTime) || !checkDateRange(this.listQuery.publishBeginTime, this.listQuery.publishEndTime)) {
-        this.$message({
-          type: 'error',
-          message: this.i18n.Error.DateRange
-        })
-        return false
-      }
-      this.listLoading = true
-      const query = Object.assign({}, this.listQuery)
-      // if (typeof query.forceUpdate !== 'undefined') {
-      //   query.forceUpdate = parseInt(query.forceUpdate)
-      // }
-      // if (typeof query.auditState !== 'undefined') {
-      //   query.auditState = parseInt(query.auditState)
-      // }
-      query.beginTime && (query.beginTime = parseTime(query.beginTime, '{y}-{m}-{d} 0:0:0'))
-      query.endTime && (query.endTime = parseTime(query.endTime, '{y}-{m}-{d} 23:59:59'))
-      query.publishBeginTime && (query.publishBeginTime = parseTime(query.publishBeginTime, '{y}-{m}-{d} 0:0:0'))
-      query.publishEndTime && (query.publishEndTime = parseTime(query.publishEndTime, '{y}-{m}-{d} 23:59:59'))
-      // getAppList(query).then(response => {
-      // 	if (response.data.code === 200) {
-      // 		this.list = response.data.data.list;
-      // 		this.total = response.data.data.total;
-      // 		this.list.filter((e, i) => {
-      // 			e.i = (query.pageNum - 1) * query.pageSize + i + 1;
-      // 			e.createTime && (e.createTime = parseTime(e.createTime, '{y}-{m}-{d} {h}:{i}:{s}'));
-      // 			if (e.auditState === 0 && e.auditTime) {
-      // 				e.auditTimeDisplay = parseTime(e.auditTime, '{y}-{m}-{d} {h}:{i}:{s}');
-      // 			} else {
-      // 				e.auditTimeDisplay = '';
-      // 			}
-      // 		});
-      // 	}
-      // 	this.listLoading = false;
-      // });
-    },
     async getLists(json) {
       json = json || { pageNum: this.QuerySelect.pageNum, pageSize: this.QuerySelect.pageSize }
       try {
         this.listLoading = true
         const { code, msg, total, data } = await API$UpdateVersionList(json)
-        console.log(code, msg, total)
-        for (let i = 0, item; (item = data[i]); i++) {
-          item['i'] = i + 1
+        if (code === 200) {
+          this.$message({
+            message: msg,
+            type: 'success'
+          })
+          for (let i = 0, item; (item = data[i]); i++) {
+            item['i'] = i + 1
+          }
+          this.total = total
+          this.DataList = data
         }
-        this.DataList = data
       } catch (e) {
         console.log(e)
       } finally {
@@ -232,30 +192,6 @@ export default {
 
     onAddVersion() {
       this.isshowDialogs = true
-    },
-    handleDel(row) {
-      this.$confirm('确认删除该版本?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async() => {
-        try {
-          const res = await delApps({ _id: row._id })
-          if (res.data.code == 200) {
-            this.$message.success(res.data.msg)
-            this.getLists()
-          }
-        } catch (err) {
-          this.$message.error(err)
-        } finally {
-        }
-      })
-    },
-    handleDetail(obj) {
-      this.isshowDialogs = true
-      this.infoList = Object.assign({ progress_wid: '100%', licenseImageUrl: [{ name: '占位' }] }, obj)
-      // this.$router.push('./' + obj.id)
-      // this.$refs.detail.show(obj, 'info');
     }
   }
 }
