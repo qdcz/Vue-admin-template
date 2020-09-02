@@ -1,6 +1,6 @@
 <template>
   <div class="yz">
-    <el-table v-loading="listLoading" :data="lists" element-loading-text="Loading..." border fit highlight-current-row style="width: 100%">
+    <el-table v-loading="listLoading" :data="list" element-loading-text="Loading..." border fit highlight-current-row style="width: 100%">
       <el-table-column width="80" align="center" label="序号" sortable prop="i">
         <template slot-scope="scope">
           <span>{{ scope.row.i }}</span>
@@ -16,7 +16,7 @@
           <span>{{ scope.row.Os }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="是否强制更新" show-overflow-tooltip sortable prop="forceUpdate">
+      <el-table-column width="200" align="center" label="是否强制更新" show-overflow-tooltip sortable prop="forceUpdate">
         <template slot-scope="scope">
           <span>{{ scope.row.forceUpdate }}</span>
         </template>
@@ -50,6 +50,10 @@
 export default {
   name: 'Tables',
   props: {
+    listLoading: {
+      type: Boolean,
+      default: false
+    },
     list: {
       type: Array,
       default: function() {
@@ -59,7 +63,6 @@ export default {
   },
   data() {
     return {
-
     }
   }
 }

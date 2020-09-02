@@ -1,81 +1,35 @@
 <template>
   <div class="app-container">
+    <!-- 查询条件 -->
     <div class="filter-container">
-      <el-form :inline="true" :model="listQuery" size="mini">
+      <el-form :inline="true" :model="QuerySelect" size="mini">
+        <el-form-item label="APPID"><el-input v-model="QuerySelect.APPID" size="mini" placeholder="请输入APPID" /></el-form-item>
+        <el-form-item label="版本号" prop="Version"><el-input v-model="QuerySelect.Version" size="mini" placeholder="请输入版本号" /></el-form-item>
+        <el-form-item label="版本更新内容" prop="content"><el-input v-model="QuerySelect.content" clearable size="mini" placeholder="请输入版本更新内容" /></el-form-item>
         <el-form-item label="强制更新">
-          <el-select v-model="listQuery.forceUpdate" clearable style="width:150px">
+          <el-select v-model="QuerySelect.forceUpdate" clearable style="width:150px" placeholder="是否强制更新">
             <el-option :value="0" label="是" />
             <el-option :value="1" label="否" />
           </el-select>
         </el-form-item>
-        <el-form-item label="状态">
-          <el-select v-model="listQuery.auditState" clearable style="width:150px">
-            <el-option :value="2" label="待审核" />
-            <el-option :value="0" label="已发布" />
-            <el-option :value="1" label="被拒绝" />
+        <el-form-item label="使用状态" placeholder="选择使用状态">
+          <el-select v-model="QuerySelect.IsCurrentUse" clearable style="width:150px">
+            <el-option :value="true" label="使用中" />
+            <el-option :value="false" label="停用中" />
           </el-select>
         </el-form-item>
-        <el-form-item label="申请日期">
-          <el-date-picker v-model="listQuery.beginTime" style="width: 150px;" clearable type="date" />
-          -
-          <el-date-picker v-model="listQuery.endTime" style="width: 150px;" clearable type="date" />
-        </el-form-item>
-        <el-form-item label="发布日期">
+        <el-form-item label="发布时间">
           <el-date-picker v-model="listQuery.publishBeginTime" style="width: 150px;" clearable type="date" />
           -
           <el-date-picker v-model="listQuery.publishEndTime" style="width: 150px;" clearable type="date" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="handleFilter">查询</el-button>
-          <el-button type="default" icon="el-icon-reset" @click="handleReset">重置</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="onSelect">查询</el-button>
+          <el-button type="default" icon="el-icon-reset" @click="onReset">重置</el-button>
         </el-form-item>
         <el-form-item style="display:block;margin:0"><el-button class="filter-item" type="primary" @click="onAddVersion">新增版本</el-button></el-form-item>
       </el-form>
     </div>
-    <!--    <el-table :data="list" v-loading="listLoading" element-loading-text="Loading..." border fit highlight-current-row
-      style="width: 100%">
-      <el-table-column width="80" align="center" label="序号" sortable prop="i">
-        <template slot-scope="scope">
-          <span>{{scope.row.i}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="100" align="center" label="版本号" show-overflow-tooltip sortable prop="versionCode">
-        <template slot-scope="scope">
-          <span>{{scope.row.versionCode}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column min-width="160" align="center" label="版本名称" show-overflow-tooltip sortable prop="versionName">
-        <template slot-scope="scope">
-          <span>{{scope.row.versionName}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="110" align="center" label="强制更新" sortable prop="forceUpdate">
-        <template slot-scope="scope">
-          <span>{{scope.row.forceUpdate ? '否' : '是'}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column min-width="160" align="center" label="申请时间" sortable prop="createTime">
-        <template slot-scope="scope">
-          <span>{{scope.row.createTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column min-width="160" align="center" label="发布时间" sortable prop="auditTimeDisplay">
-        <template slot-scope="scope">
-          <span>{{scope.row.auditTimeDisplay}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="100" align="center" label="状态" sortable prop="auditState">
-        <template slot-scope="scope">
-          <span>{{scope.row.auditState | formatAuditState}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column width="220" align="center" label="操作" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
-          <el-button class="filter-item" size="mini" type="primary" @click="handleDetail(scope.row)">查看</el-button>
-          <el-button :style="'visibility:' + (scope.row.auditState ? 'visible' : 'hidden')" class="filter-item" size="mini" type="danger" @click="handleDel(scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table> -->
 
     <!-- 指定当前使用的版本 -->
     <el-row type="flex" class="row-bg" justify="start" align="middle" :gutter="10">
@@ -94,9 +48,9 @@
     </el-row>
     <!-- 添加编辑的dialog -->
     <add-dialog :isshow-dialogs.sync="isshowDialogs" :info-list.sync="infoList" @updateList="getLists" />
-    <!-- unicloud更新 -->
-    <tables />
-
+    <!-- 表格 -->
+    <tables :list="DataList" :list-loading.sync="listLoading" />
+    <!-- 分页器 -->
     <div class="pagination-container">
       <el-pagination
         background
@@ -109,7 +63,6 @@
         @current-change="handleCurrentChange"
       />
     </div>
-    <!-- <Detail ref="detail" @change="getList" /> -->
   </div>
 </template>
 
@@ -118,7 +71,7 @@
 // import { parseTime, checkDateRange } from '@/utils'
 // import Detail from './components/appDetail'
 // import dialogs from './dialogs.vue'
-
+import { API$UpdateVersionList } from '../../../api/YangPan/UploadApp.js'
 import tables from './components/Tables.vue'
 import addDialog from './components/dialogs.vue'
 export default {
@@ -127,25 +80,27 @@ export default {
     return {
       list: null,
       lists: [], // unicloud
-      isshowDialogs: false, // 是否显示发布弹窗
       CurrentUse_IOS: '', // 当前选择使用的IOS版本
       CurrentUse_And: '',
       infoList: '', // 查看详情传给弹窗的数据
-      total: null,
+
       listLoading: false,
       listQuery: {},
-      // auditDateObj: null,
-      // publishDateObj: null,
-      temp: {
-        pageNum: 1,
+      QuerySelect: {
+        // 条件查询参数
+        pageNum: 0,
         pageSize: 10,
-        forceUpdate: undefined,
-        auditState: undefined,
-        beginTime: undefined,
-        endTime: undefined,
-        publishBeginTime: undefined,
-        publishEndTime: undefined
-      }
+        forceUpdate: '',
+        APPID: '',
+        Version: '',
+        content: '',
+        IsCurrentUse: '',
+        begin_createTime: '',
+        end_createTime: ''
+      },
+      total: null, // 分页器总数
+      isshowDialogs: false, // 是否显示发布弹窗
+      DataList: [] // 表格数据
     }
   },
   created() {
@@ -154,6 +109,36 @@ export default {
     this.getLists()
   },
   methods: {
+    // 条件查询按钮
+    onSelect() {
+      this.getLists(this.QuerySelect)
+    },
+    // 查询条件重置
+    onReset() {
+      this.QuerySelect = {
+        // 条件查询参数
+        pageNum: 0,
+        pageSize: 10,
+        forceUpdate: '',
+        APPID: '',
+        Version: '',
+        content: '',
+        IsCurrentUse: '',
+        begin_createTime: '',
+        end_createTime: ''
+      }
+    },
+    // 分页器 条数发生变化
+    handleSizeChange(val) {
+      this.QuerySelect.pageSize = val
+      this.getLists()
+    },
+    // 分页器 页数发生变化
+    handleCurrentChange(val) {
+      this.QuerySelect.pageNum = val - 1
+      this.getLists()
+    },
+
     getList() {
       if (!checkDateRange(this.listQuery.beginTime, this.listQuery.endTime) || !checkDateRange(this.listQuery.publishBeginTime, this.listQuery.publishEndTime)) {
         this.$message({
@@ -191,16 +176,26 @@ export default {
       // 	this.listLoading = false;
       // });
     },
-    async getLists() {
-      this.listLoading = true
-      let res = await selAppList()
-      this.lists = res.data.data
-      res = await getCurrentUse({ Os: 'IOS' })
-      this.CurrentUse_IOS = res.data.data.Version
-      res = await getCurrentUse({ Os: 'Android' })
-      this.CurrentUse_And = res.data.data.Version
+    async getLists(json) {
+      json = json || { pageNum: this.QuerySelect.pageNum, pageSize: this.QuerySelect.pageSize }
+      try {
+        this.listLoading = true
+        const { code, msg, total, data } = await API$UpdateVersionList(json)
+        console.log(code, msg, total)
+        for (let i = 0, item; (item = data[i]); i++) {
+          item['i'] = i + 1
+        }
+        this.DataList = data
+      } catch (e) {
+        console.log(e)
+      } finally {
+        this.listLoading = false
+      }
+      // res = await getCurrentUse({ Os: 'IOS' })
+      // this.CurrentUse_IOS = res.data.data.Version
+      // res = await getCurrentUse({ Os: 'Android' })
+      // this.CurrentUse_And = res.data.data.Version
       // await CheckUpdate({Os: 'Android'})
-      this.listLoading = false
     },
     // 选择当前使用的版本  andorid
     async onSelCurrUse_And(e) {
@@ -234,22 +229,7 @@ export default {
       })
       this.getLists()
     },
-    handleFilter() {
-      this.listQuery.pageNum = 1
-      // this.getList();
-    },
-    handleSizeChange(val) {
-      this.listQuery.pageSize = val
-      // this.getList();
-    },
-    handleCurrentChange(val) {
-      this.listQuery.pageNum = val
-      // this.getList();
-    },
-    handleReset() {
-      this.listQuery = Object.assign({}, this.temp)
-      this.getLists()
-    },
+
     onAddVersion() {
       this.isshowDialogs = true
     },
