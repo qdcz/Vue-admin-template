@@ -136,7 +136,7 @@ export const constantRoutes = [{
   ]
 },
 
-/** ************************************************阿洋网盘后端部分******************************************************************************/
+/** ************************************************洋网盘后端部分******************************************************************************/
 {
   path: '/YangPan',
   component: Layout,
@@ -155,11 +155,11 @@ export const constantRoutes = [{
       icon: 'UploadImg'
     }
   }, {
-    path: '/fastTemplate/ImgUpload',
-    name: 'fastTemplate-ImgUpload',
-    component: () => import('@/views/fastTemplate/ImgUpload/index'),
+    path: '/YangPan/UserManager/UserList',
+    name: 'UserManager',
+    component: () => import('@/views/YangPan/UserManager/UserList'),
     meta: {
-      title: '图片上传',
+      title: '用户管理',
       icon: 'UploadImg'
     }
   }]

@@ -1,12 +1,12 @@
 <template>
-  <div class="yz padd40">
+  <div class="yz padd20">
     <tables class="mt20" :list="DataList" :list-loading.sync="listLoading" :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
   </div>
 </template>
 
 <script>
-import { API$UpdateVersionList } from '../../../api/YangPan/UploadApp.js'
-import tables from './table.vue'
+import { API$SelUserListt } from '../../../api/YangPan/User.js'
+import tables from './comonents/Tables.vue'
 export default {
   name: 'Tables',
   components: { tables },
@@ -40,7 +40,7 @@ export default {
       json = json || { pageNum: this.QuerySelect.pageNum, pageSize: this.QuerySelect.pageSize }
       try {
         this.listLoading = true
-        const { code, msg, total, data } = await API$UpdateVersionList(json)
+        const { code, msg, total, data } = await API$SelUserListt(json)
         if (code === 200) {
           this.$message({
             message: msg,
