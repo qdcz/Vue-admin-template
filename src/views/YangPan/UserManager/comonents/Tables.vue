@@ -90,8 +90,7 @@ export default {
     // 查看按钮
     tableItemDetail(e) {
       this.$emit('update:isshowDialogs', true)
-      const DialogInfo = Object.assign({ progress_wid: '100%', licenseImageUrl: [{ name: '占位' }] }, e)
-      this.$emit('update:dialogInfo', DialogInfo)
+      this.$emit('update:dialogInfo', e)
     },
     // 启用/禁用按钮
     async tableItemUse(e) {

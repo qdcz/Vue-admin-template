@@ -1,5 +1,7 @@
 <template>
   <div class="yz padd20">
+    <!-- 添加编辑的dialog -->
+    <add-dialog :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
     <tables class="mt20" :list="DataList" :list-loading.sync="listLoading" :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
   </div>
 </template>
@@ -7,9 +9,10 @@
 <script>
 import { API$SelUserListt } from '../../../api/YangPan/User.js'
 import tables from './comonents/Tables.vue'
+import addDialog from './comonents/dialogs.vue'
 export default {
   name: 'Tables',
-  components: { tables },
+  components: { tables, addDialog },
   data() {
     return {
       QuerySelect: {

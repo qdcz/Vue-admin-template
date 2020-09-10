@@ -1,52 +1,44 @@
 <template>
   <div class="dialogs">
-    <el-dialog title="添加app版本" :visible.sync="isshowDialogs" width="60%" center @close="dialogClose">
+    <el-dialog title="修改个人信息" :visible.sync="isshowDialogs" width="60%" center @close="dialogClose">
       <el-form ref="form" :model="form" class="el-form" :rules="rules" label-width="80px" label-position="left">
-        <!-- 操作系统 -->
-        <el-form-item label="Os" prop="Os">
-          <el-select v-model="form.Os" placeholder="请输入要上传操作系统">
-            <el-option label="Android" value="Android" />
-            <el-option label="IOS" value="IOS" />
-          </el-select>
-        </el-form-item>
-        <!-- 强制更新 -->
-        <el-form-item label="强制更新" prop="forceUpdate">
-          <el-select v-model="form.forceUpdate" placeholder="请选择是否强制更新">
-            <el-option label="YES" value="YES" />
-            <el-option label="NO" value="NO" />
-          </el-select>
-        </el-form-item>
-
-        <!-- 版本 -->
-        <el-form-item label="版本" prop="Version"><el-input v-model="form.Version" placeholder="请输入要上传的版本,示例1.1.0" /></el-form-item>
-
-        <!-- APPId -->
-        <el-form-item label="APPId" prop="AppId"><el-input v-model="form.AppId" placeholder="请输入要上传APPId" /></el-form-item>
-
-        <!-- 更新内容 -->
-        <el-form-item label="更新内容" prop="content"><el-input v-model="form.content" :rows="10" type="textarea" placeholder="请输入要更新的内容,分点要换行隔开" /></el-form-item>
-
-        <!-- 文件上传 -->
-        <el-form-item label="安装包" prop="DownUrl">
-          <el-upload class="wid1p" drag action="#666" :on-change="singleFileChange" :file-list="licenseImageUrl" :limit="1" :auto-upload="false" :show-file-list="false">
-            <i class="el-icon-upload" />
-            <div class="el-upload__text">
-              将文件拖到此处，或
-              <em>点击上传</em>
-            </div>
-            <div slot="tip" class="el-upload__tip" style="padding:10px; line-height: 0;">只能上传单个文件，且不超过100MB</div>
-
-            <div v-if="licenseImageUrl.length >= 1" slot="tip" class="down-list" style="padding:10px 0; line-height: 1;">
-              <div class="first-line">
-                <div style="display: flex; align-items: center;">
-                  <div>{{ up_filename }}</div>
-                </div>
-                <div v-if="progress_wid != '100%'">{{ progress_wid }}</div>
-                <i v-else class="el-icon-delete" @click="file_cancel" />
-              </div>
-              <div class="second-line"><div class="progress" :style="{ width: progress_wid }" /></div>
-            </div>
+        <el-form-item label="账号" prop="account"><el-input v-model="form.account" size="large" disabled="disabled" /></el-form-item>
+        <el-form-item label="密码" prop="pwd"><el-input v-model="form.pwd" size="large" type="password" placeholder="请输入密码" /></el-form-item>
+        <el-form-item label="昵称" prop="Nickname"><el-input v-model="form.Nickname" size="large" placeholder="请输入昵称" /></el-form-item>
+        <el-form-item>
+          <el-upload
+            ref="upload"
+            action=""
+            class="avatar-uploader"
+            list-type="picture-card"
+            :auto-upload="false"
+            :limit="1"
+            :file-list="fileList"
+            :before-upload="beforeImgUpload"
+            :on-exceed="cover_handleExceed"
+            :on-success="ImgUploadSuccess"
+            :before-remove="BeforeRemoveImgUpload"
+            :on-preview="ImgPreview"
+            :on-change="singleFileChange"
+          >
+            <!-- <img  :src="fileList[0].url" class="avatar"> -->
+            <i class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
+
+          <!-- 图片查看 -->
+          <el-dialog :visible.sync="ImgDialog.Visible"><img width="100%" :src="ImgDialog.ImageUrl" alt=""></el-dialog>
+        </el-form-item>
+        <el-form-item label="生日" prop="birth">
+          <el-col :span="11"><el-date-picker v-model="form.birth" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" style="width: 100%;" /></el-col>
+        </el-form-item>
+        <el-form-item label="简介" prop="introduce">
+          <el-input v-model="form.introduce" size="large" placeholder="简介" type="textarea" :autosize="{ minRows: 2, maxRows: 8 }" />
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-select v-model="form.sex" placeholder="选择性别">
+            <el-option label="男" value="男" />
+            <el-option label="女" value="女" />
+          </el-select>
         </el-form-item>
         <el-button class="submit-bth" type="primary" @click="onSubmit('form')">{{ dialogInfo._id ? '更新' : '发布' }}</el-button>
       </el-form>
@@ -55,61 +47,103 @@
 </template>
 
 <script>
-// const COS = require('cos-js-sdk-v5')
 const OSS = require('ali-oss')
-import { API$GetSts } from '../../../../api/YangPan/OSS.js'
-import { API$AddUpdateVersion, API$UpdVersiont } from '../../../../api/YangPan/UploadApp.js'
+import { API$GetSts, API$DelOssFile } from '../../../../api/YangPan/OSS.js'
+import { API$UpdUser } from '../../../../api/YangPan/User.js'
 export default {
   props: ['isshowDialogs', 'dialogInfo'],
   data() {
     return {
-      tengxun_cos: '',
       ali_oss: '',
       licenseImageUrl: [],
-      progress_wid: '0%',
-      up_filename: '',
+      fileList: [],
+      ImgDialog: {
+        ImageUrl: '',
+        Visible: false
+      },
       form: {
-        Os: 'Android',
-        forceUpdate: 'NO',
-        Version: '',
-        AppId: '',
-        content: '1.填写更新内容分点的时候\n2.一定要换行隔开',
-        DownUrl: ''
+        account: '',
+        Nickname: '',
+        birth: '',
+        introduce: '',
+        pwd: '',
+        sex: ''
       },
       rules: {
-        Os: [{ required: true, message: '操作系统不能为空', trigger: 'change' }],
-        forceUpdate: [{ required: true, message: '是否强制更新不能为空', trigger: 'change' }],
-        Version: [{ required: true, message: '版本号不能为空', trigger: 'change' }],
-        AppId: [{ required: true, message: 'AppId不能为空', trigger: 'change' }],
-        content: [{ required: true, message: '更新的内容不能为空', trigger: 'change' }],
-        DownUrl: [{ required: true, message: '未上传文件~', trigger: 'change' }]
+        Nickname: [{ required: true, message: '昵称不能为空', trigger: 'change' }],
+        birth: [{ required: true, message: '生日不能为空', trigger: 'change' }],
+        introduce: [{ required: true, message: '简介不能为空', trigger: 'change' }]
       }
     }
   },
   watch: {
     dialogInfo() {
-      const { Os, forceUpdate, Version, content, DownUrl, AppId } = this.dialogInfo
-      this.form = { Os, forceUpdate, Version, content, DownUrl, AppId }
-      this.progress_wid = this.dialogInfo.progress_wid
-      this.up_filename = DownUrl
-      this.licenseImageUrl = this.dialogInfo.licenseImageUrl
+      this.form.account = this.dialogInfo.account
+      this.form.Nickname = this.dialogInfo.Nickname
+      this.form.birth = this.dialogInfo.birth
+      this.form.introduce = this.dialogInfo.introduce
+      this.form.sex = this.dialogInfo.sex
+
+      this.fileList = this.dialogInfo.avatar
+        ? [
+          {
+            name: 'test',
+            url: this.dialogInfo.avatar
+          }
+        ]
+        : []
     }
   },
   async created() {
     this.GetOssSts()
   },
   methods: {
+    // 上传文件之前的钩子
+    beforeImgUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isJPG) {
+        this.$message.error('上传图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    // 文件超出个数限制时的钩子
+    cover_handleExceed() {
+      this.$message.warning('最多上传1张图片')
+    },
+    BeforeRemoveImgUpload() {
+      return new Promise((res, rej) => {
+        this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+          .then(() => {
+            this.DelOssFile(this.fileList[0].name)
+            res()
+          })
+          .catch(() => {
+            rej()
+          })
+      })
+    },
+    // 图片上传成功~
+    ImgUploadSuccess(file, fileList) {
+      this.fileList[0].url = fileList.response.data
+    },
+    // 图片预览
+    ImgPreview(file) {
+      this.ImgDialog.ImageUrl = file.url
+      this.ImgDialog.Visible = true
+    },
     // 提交信息
     async onSubmit(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           let loading = null
-          if (this.form.Version.split('.').length !== 3) {
-            return this.$message({
-              message: '版本号格式错误~',
-              type: 'warning'
-            })
-          }
           try {
             loading = this.$loading({
               lock: true,
@@ -146,9 +180,11 @@ export default {
     },
     // 更新数据
     async UpdAPI() {
-      const json = Object.assign({ _id: this.dialogInfo._id }, this.form)
+      const avatar = this.fileList.length > 0 ? this.fileList[0].url : ''
+      const json = Object.assign({ _id: this.dialogInfo._id, avatar }, this.form)
+      console.warn(json)
       try {
-        const { code, msg } = await API$UpdVersiont(json)
+        const { code, msg } = await API$UpdUser(json)
         if (code === 200) {
           this.$message({
             message: msg,
@@ -167,26 +203,18 @@ export default {
     async singleFileChange(file, fileList) {
       const name = file.name.slice(0, file.name.match(/[^\.]\w*$/).index - 1)
       const type = file.name.match(/[^\.]\w*$/)[0]
-      if (!['apk', 'wgt'].includes(type)) {
-        this.licenseImageUrl = []
-        this.$message.error('上传文件格式不支持!,只支持apk和wgt文件')
-        return
-      }
+      // if (!['apk', 'wgt'].includes(type)) {
+      //   this.licenseImageUrl = []
+      //   this.$message.error('上传文件格式不支持!,只支持apk和wgt文件')
+      //   return
+      // }
       if (!(file.size / 1024 / 1024 < 100)) {
         this.licenseImageUrl = []
+        this.fileList = []
         return this.$message.error('上传文件大小不能超过 100MB!')
       }
-
       const copyFile = new File([file.raw], `${name}_${new Date().getTime()}.${type}`)
       this.up_filename = file.name
-      // // 占位
-      this.licenseImageUrl = [
-        {
-          status: 'success',
-          url: "url + '?' + res.data",
-          logo: 'url'
-        }
-      ]
       const loading = this.$loading({
         lock: true,
         text: '上传中，请耐心等待',
@@ -196,10 +224,10 @@ export default {
 
       //  阿里云  文件上传api
       try {
-        const res = await this.ali_oss.multipartUpload(`/uploadApp/${name}_${new Date().getTime()}.${type}`, copyFile, {
+        const res = await this.ali_oss.multipartUpload(`/uploadImg/${this.form.account}/${name}_${new Date().getTime()}.${type}`, copyFile, {
           progress: (p, checkpoint) => {
-            this.progress_wid = (p * 100).toString().slice(0, 4) + '%'
-            if (this.progress_wid === '100%') {
+            const progress_wid = (p * 100).toString().slice(0, 4) + '%'
+            if (progress_wid === '100%') {
               this.$message({
                 message: '上传成功~',
                 type: 'success'
@@ -209,7 +237,14 @@ export default {
           meta: { year: 2020, people: 'test' }
         })
         if (res.res.status === 200) {
-          this.form.DownUrl = res.name
+          console.warn(res.res)
+          this.fileList = [
+            {
+              name: res.name, //    /uploadImg/15892023483/05_1599731424799.jpg
+              // url: res.res.requestUrls[0] //    "http://qdds666.oss-cn-hangzhou.aliyuncs.com/uploadImg//06_1599731490849.jpg"
+              url: 'http://qdds666.oss-cn-hangzhou.aliyuncs.com/' + res.name
+            }
+          ]
         }
       } catch (e) {
         console.log(e)
@@ -217,54 +252,25 @@ export default {
       } finally {
         loading.close()
       }
-
-      // 腾讯云 上传API
-      // this.tengxun_cos.putObject(
-      //   {
-      //     Bucket: 'updateplug-1300539522' /* 必须 */,
-      //     Region: 'ap-guangzhou' /* 存储桶所在地域，必须字段 */,
-      //     Key: `${name}_${new Date().getTime()}.${type}` /* 必须 */,
-      //     Body: copyFile, // 上传文件对象
-      //     onProgress: progressData => {
-      //       this.progress_wid = progressData.percent * 100 + '%'
-      //       console.log(JSON.stringify(progressData))
-      //     }
-      //   },
-      //   function(err, data) {
-      //     loading.close()
-      //     console.log(err || data.statusCode)
-      //     if (err) that.file_cancel()
-      //     err ? that.$message.error('上传失败,' + err) : that.$message({ message: '恭喜你，上传成功~', type: 'success' })
-      //     if (!err && data.statusCode === 200) that.form.DownUrl = data.Location
-      //   }
-      // )
-    },
-    // 删除上传的文件
-    // TODO  后期校验把桶的数据删了
-    file_cancel() {
-      this.licenseImageUrl = []
-      this.form.DownUrl = ''
-    },
-    dialogClose() {
-      this.$emit('update:isshowDialogs', false)
-      this.$emit('update:dialogInfo', {
-        licenseImageUrl: [],
-        progress_wid: '0%'
-      })
     },
 
     // 清空表单
     clear_form() {
       this.form = {
-        Os: '',
-        forceUpdate: '',
-        Version: '',
-        AppId: '',
-        content: '1.填写更新内容分点的时候\n2.一定要换行隔开',
-        DownUrl: ''
+        account: '',
+        Nickname: '',
+        birth: '',
+        introduce: '',
+        pwd: '',
+        sex: ''
       }
-      this.file_cancel()
+      this.fileList = []
     },
+    dialogClose() {
+      this.$emit('update:isshowDialogs', false)
+      this.$emit('update:DialogInfo', '')
+    },
+    /** *****************************************************************  OSS处理部分****************************************************/
     // 初始化oss
     async GetOssSts() {
       const {
@@ -284,6 +290,22 @@ export default {
           message: msg,
           type: 'success'
         })
+      }
+    },
+    // 删除oss文件
+    async DelOssFile(dir) {
+      try {
+        await API$DelOssFile({ filePath: dir })
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+        this.fileList = []
+        this.$refs.upload.clearFiles()
+      } catch (e) {
+        this.$message.error(e)
+      } finally {
+
       }
     }
   }
