@@ -1,5 +1,41 @@
 <template>
   <div class="yz padd20">
+    <!-- 查询条件 -->
+    <div class="filter-container">
+      <el-form :inline="true" :model="QuerySelect" size="mini">
+        <el-form-item label="昵称" prop="Nickname"><el-input v-model="QuerySelect.Nickname" size="mini" clearable placeholder="请输入昵称" /></el-form-item>
+        <el-form-item label="账号" prop="account"><el-input v-model="QuerySelect.account" clearable size="mini" placeholder="请输入账号" /></el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-select v-model="QuerySelect.sex" clearable style="width:150px" placeholder="请选择性别">
+            <el-option value="男" label="男" />
+            <el-option value="女" label="女" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="城市" prop="Region"><city-select @change="CitySelectOnchange" /></el-form-item>
+        <el-form-item label="使用状态">
+          <el-select v-model="QuerySelect.IsCurrentUse" clearable style="width:150px" placeholder="选择使用状态">
+            <el-option :value="true" label="使用中" />
+            <el-option :value="false" label="停用中" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="生日">
+          <el-date-picker v-model="QuerySelect.birthBeginTime" style="width: 150px;" clearable type="date" placeholder="选择起始日期" />
+          -
+          <el-date-picker v-model="QuerySelect.birthEndTime" style="width: 150px;" clearable type="date" placeholder="选择结束日期" />
+        </el-form-item>
+        <el-form-item label="注册时间">
+          <el-date-picker v-model="QuerySelect.registerTimeBeginTime" style="width: 150px;" clearable type="date" placeholder="选择起始日期" />
+          -
+          <el-date-picker v-model="QuerySelect.registerTimeEndTime" style="width: 150px;" clearable type="date" placeholder="选择结束日期" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" @click="onSelect">查询</el-button>
+          <el-button type="default" icon="el-icon-reset" @click="onReset">重置</el-button>
+        </el-form-item>
+        <el-form-item style="display:block;margin:0"><el-button class="filter-item" type="primary" @click="onAddUser">新增用户</el-button></el-form-item>
+      </el-form>
+    </div>
+
     <!-- 添加编辑的dialog -->
     <add-dialog :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
     <tables class="mt20" :list="DataList" :list-loading.sync="listLoading" :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
@@ -10,22 +46,25 @@
 import { API$SelUserListt } from '../../../api/YangPan/User.js'
 import tables from './comonents/Tables.vue'
 import addDialog from './comonents/dialogs.vue'
+import CitySelect from '@/components/CitySelect/CitySelect'
 export default {
   name: 'Tables',
-  components: { tables, addDialog },
+  components: { tables, addDialog, CitySelect },
   data() {
     return {
       QuerySelect: {
         // 条件查询参数
         pageNum: 0,
         pageSize: 10,
-        forceUpdate: '',
-        APPID: '',
-        Version: '',
-        content: '',
+        Nickname: '',
+        account: '',
+        sex: '',
+        Region: '',
         IsCurrentUse: '',
-        begin_createTime: '',
-        end_createTime: ''
+        birthBeginTime: '',
+        birthEndTime: '',
+        registerTimeBeginTime: '',
+        registerTimeEndTime: ''
       },
 
       listLoading: false,
@@ -39,6 +78,27 @@ export default {
     this.getLists()
   },
   methods: {
+    onAddUser() {
+      this.isshowDialogs = true
+    },
+    onSelect() {
+      this.getLists(this.QuerySelect)
+    },
+    onReset() {
+      this.QuerySelect = {
+        pageNum: 0,
+        pageSize: 10,
+        Nickname: '',
+        account: '',
+        sex: '',
+        Region: '',
+        IsCurrentUse: '',
+        birthBeginTime: '',
+        birthEndTime: '',
+        registerTimeBeginTime: '',
+        registerTimeEndTime: ''
+      }
+    },
     async getLists(json) {
       json = json || { pageNum: this.QuerySelect.pageNum, pageSize: this.QuerySelect.pageSize }
       try {
@@ -65,4 +125,8 @@ export default {
 }
 </script>
 
-<style lang="less" scoped="scoped"></style>
+<style lang="less" scoped="scoped">
+/deep/ .el-select {
+  padding: 0 10px;
+}
+</style>
