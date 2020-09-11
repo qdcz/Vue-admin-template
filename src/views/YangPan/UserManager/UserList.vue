@@ -18,15 +18,15 @@
             <el-option :value="false" label="停用中" />
           </el-select>
         </el-form-item>
-        <el-form-item label="生日">
+        <!--        <el-form-item label="生日">
           <el-date-picker v-model="QuerySelect.birthBeginTime" style="width: 150px;" clearable type="date" placeholder="选择起始日期" />
           -
           <el-date-picker v-model="QuerySelect.birthEndTime" style="width: 150px;" clearable type="date" placeholder="选择结束日期" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="注册时间">
-          <el-date-picker v-model="QuerySelect.registerTimeBeginTime" style="width: 150px;" clearable type="date" placeholder="选择起始日期" />
+          <el-date-picker v-model="QuerySelect.registerTimeBeginTime" style="width: 180px;" clearable type="date" placeholder="选择起始日期" format="yyyy-MM-dd HH:mm:ss" />
           -
-          <el-date-picker v-model="QuerySelect.registerTimeEndTime" style="width: 150px;" clearable type="date" placeholder="选择结束日期" />
+          <el-date-picker v-model="QuerySelect.registerTimeEndTime" style="width: 180px;" clearable type="date" placeholder="选择结束日期" format="yyyy-MM-dd HH:mm:ss" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="onSelect">查询</el-button>
@@ -82,7 +82,11 @@ export default {
       this.isshowDialogs = true
     },
     onSelect() {
-      this.getLists(this.QuerySelect)
+      const json = JSON.parse(JSON.stringify(this.QuerySelect))
+      // console.log(new Date(`${this.QuerySelect['registerTimeBeginTime'].getTime()}`))
+      // json['registerTimeBeginTime'] = this.QuerySelect['registerTimeBeginTime'].getTime() || ''
+      // json['registerTimeEndTime'] = this.QuerySelect['registerTimeEndTime'].getTime() || ''
+      this.getLists(json)
     },
     onReset() {
       this.QuerySelect = {
