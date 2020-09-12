@@ -54,7 +54,8 @@
 </template>
 
 <script>
-import { API$DeketeVersiont, API$UpdCurrentUse } from '../../../../api/YangPan/UploadApp.js'
+import { API$UpdCurrentUse } from '../../../../api/YangPan/UploadApp.js'
+import { API$DelUser } from '../../../../api/YangPan/User.js'
 export default {
   name: 'Tables',
   props: {
@@ -130,7 +131,7 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
         })
-        const { code, msg } = await API$DeketeVersiont({ id: e })
+        const { code, msg } = await API$DelUser({ _id: e })
         if (code === 200) {
           this.$message({
             message: msg,
