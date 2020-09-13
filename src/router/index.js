@@ -95,7 +95,7 @@ export const constantRoutes = [{
   name: 'fastTemplate',
   meta: {
     title: '快速模板',
-    icon: 'el-icon-s-help'
+    icon: 'quick'
   },
   children: [{
     path: '/fastTemplate/index',
@@ -144,7 +144,7 @@ export const constantRoutes = [{
   name: 'AppUpdateList',
   meta: {
     title: '洋盘',
-    icon: 'el-icon-s-help'
+    icon: 'YangPan'
   },
   children: [{
     path: '/YangPan/AppUpdate/AppUpdateList',
@@ -152,7 +152,7 @@ export const constantRoutes = [{
     component: () => import('@/views/YangPan/AppUpdate/AppUpdateList'),
     meta: {
       title: 'APP版本管理',
-      icon: 'UploadImg'
+      icon: 'Version'
     }
   }, {
     path: '/YangPan/UserManager/UserList',
@@ -160,7 +160,7 @@ export const constantRoutes = [{
     component: () => import('@/views/YangPan/UserManager/UserList'),
     meta: {
       title: '用户管理',
-      icon: 'UploadImg'
+      icon: 'Users'
     }
   }]
 },
