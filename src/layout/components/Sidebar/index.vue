@@ -56,11 +56,11 @@ export default {
 </script>
 <style>
   .el-menu-item{
-    font-size: 12px;
+    font-size: 13px;
     padding: 0 10px;
   }
   .el-submenu__title{
-    font-size: 12px;
+    font-size: 13px;
     padding: 0 10px;
   }
   .el-submenu .el-menu-item{

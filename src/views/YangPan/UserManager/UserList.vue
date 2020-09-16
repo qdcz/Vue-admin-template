@@ -32,7 +32,7 @@
           <el-button type="primary" icon="el-icon-search" @click="onSelect">查询</el-button>
           <el-button type="default" icon="el-icon-reset" @click="onReset">重置</el-button>
         </el-form-item>
-        <el-form-item style="display:block;margin:0"><el-button class="filter-item" type="primary" @click="onAddUser">新增用户</el-button></el-form-item>
+        <!-- <el-form-item style="display:block;margin:0"><el-button class="filter-item" type="primary" @click="onAddUser">新增用户</el-button></el-form-item> -->
       </el-form>
     </div>
 

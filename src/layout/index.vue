@@ -92,6 +92,6 @@ export default {
   }
 
   .app-wrapper >>> .main-container{
-    font-size: 10px;
+    font-size: 12px;
   }
 </style>
