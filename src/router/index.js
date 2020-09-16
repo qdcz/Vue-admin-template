@@ -60,18 +60,18 @@ export const constantRoutes = [{
 {
   path: '/1111',
   component: Layout,
-  redirect: '/example/table',
-  name: 'Example',
+  redirect: '/WebGL/table',
+  name: 'WebGL',
   meta: {
-    title: 'Example',
+    title: 'WebGL',
     icon: 'el-icon-s-help'
   },
   children: [{
-    path: 'table',
-    name: 'Table',
+    path: 'ModelList',
+    name: 'ModelList',
     component: () => import('@/views/table/index'),
     meta: {
-      title: 'Table',
+      title: 'ModelList',
       icon: 'table'
     }
   },
@@ -82,6 +82,55 @@ export const constantRoutes = [{
     meta: {
       title: 'Tree',
       icon: 'tree'
+    }
+  }
+  ]
+},
+
+/** ************************************************WebGl部分******************************************************************************/
+{
+  path: '/WebGL',
+  component: Layout,
+  redirect: '/WebGL/ModelList',
+  name: 'WebGL',
+  meta: {
+    title: 'WebGL',
+    icon: 'quick'
+  },
+  children: [{
+    path: '/WebGL/ModelList',
+    name: 'ModelList',
+    component: () => import('@/views/WebGl/ModelList'),
+    meta: {
+      title: '模型列表',
+      icon: 'table'
+    }
+  },
+  {
+    path: '/WebGl/ModelShow',
+    name: 'ModelShow',
+    component: () => import('@/views/WebGl/ModelShow'),
+    meta: {
+      title: '模型展示',
+      icon: 'UploadImg'
+    }
+  },
+  {
+    path: '/fastTemplate/formValidate',
+    name: 'fastTemplate-formValidate',
+    component: () => import('@/views/fastTemplate/formValidate/index'),
+    meta: {
+      title: '表单验证',
+      icon: 'formValidate'
+    }
+  },
+  {
+    path: '/fastTemplate/Table',
+    name: 'fastTemplate-Table',
+    component: () => import('@/views/fastTemplate/Table/index'),
+    meta: {
+      title: '表格',
+      icon: 'table'
     }
   }
   ]
