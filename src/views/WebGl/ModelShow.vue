@@ -172,19 +172,9 @@ export default {
     jietu() {
       this.controlPanel_IsShow = false
       setTimeout(() => {
-        html2canvas(document.querySelector('.model > canvas'), {}).then(canvas => {
-          var imgData = canvas.toDataURL('image/png')
-          // 封装blob对象
-          // var data = dataURItoBlob(imgData)
-          // const blob = new Blob([imgData], { type: 'image/png' }) // 创建一个blob对象
-          // const url = window.URL.createObjectURL(blob) // 获取url
-          const link = document.createElement('a')
-          link.href = imgData
-          link.download = `${this.$tools.create_token()}.png` // 下载的文件名
-          link.click()
-          this.controlPanel_IsShow = true
-        })
-      }, 1000)
+        this.DownLoadImg()
+        this.controlPanel_IsShow = true
+      }, 500)
     },
     // 一键拍照生成截图
     async onCreate() {
@@ -198,13 +188,7 @@ export default {
           this.Object_rotationY = Number(this.Object_rotationY) + Math.PI / 4
           const run = () => {
             if (run_num >= this.Object_rotationY) {
-              html2canvas(document.querySelector('.model > canvas'), {}).then(canvas => {
-                var imgData = canvas.toDataURL('image/png')
-                const link = document.createElement('a')
-                link.href = imgData
-                link.download = `${this.$tools.create_token()}.png` // 下载的文件名
-                link.click()
-              })
+              this.DownLoadImg()
               res()
               return
             }
@@ -221,7 +205,41 @@ export default {
       for (let i = 0; i < len; i++) {
         await PPP()
       }
-      // this.Object_rotationY = 0
+
+      const Object_rotationX = -(Math.PI / 4)
+
+      var run_num = this.Object_rotationY // 先赋值
+      this.Object_rotationY = Math.PI // 设置结束角度
+      const run = () => {
+        if (run_num <= this.Object_rotationY) {
+          this.DownLoadImg()
+          return
+        }
+        run_num = run_num - 0.05
+        this.Obejct_model.rotation.y = run_num
+        this.Obejct_model.rotation.x = Object_rotationX
+        this.scene.add(this.Obejct_model)
+        this.renderer.render(this.scene, this.camera)
+        requestAnimationFrame(run)
+      }
+      run()
+
+      this.controlPanel_IsShow = true
+    },
+    // 传入图片数据下载图片
+    DownLoadImg() {
+      html2canvas(document.querySelector('.model > canvas'), {}).then(canvas => {
+        // 封装blob对象
+        // var data = dataURItoBlob(imgData)
+        // const blob = new Blob([imgData], { type: 'image/png' }) // 创建一个blob对象
+        // const url = window.URL.createObjectURL(blob) // 获取url
+        var imgData = canvas.toDataURL('image/png')
+        console.log(imgData)
+        const link = document.createElement('a')
+        link.href = imgData
+        link.download = `${this.$tools.create_token()}.png` // 下载的文件名
+        link.click()
+      })
     }
   }
 }

@@ -114,24 +114,6 @@ export const constantRoutes = [{
       title: '模型展示',
       icon: 'UploadImg'
     }
-  },
-  {
-    path: '/fastTemplate/formValidate',
-    name: 'fastTemplate-formValidate',
-    component: () => import('@/views/fastTemplate/formValidate/index'),
-    meta: {
-      title: '表单验证',
-      icon: 'formValidate'
-    }
-  },
-  {
-    path: '/fastTemplate/Table',
-    name: 'fastTemplate-Table',
-    component: () => import('@/views/fastTemplate/Table/index'),
-    meta: {
-      title: '表格',
-      icon: 'table'
-    }
   }
   ]
 },
