@@ -1,13 +1,20 @@
 <template>
   <div class="model">
-    <div class="controlPanel"><button @click="switchAngle">切换角度</button></div>
+    <div v-if="controlPanel_IsShow" class="controlPanel">
+      <button @click="switchAngle">顺旋转45度角</button>
+      <button @click="jietu">启动截图并下载</button>
+      <button @click="onCreate">一键生成海报（含6张，左右45/90度，仰视20度，正脸）</button>
+    </div>
   </div>
 </template>
 
 <script>
-import * as THREE from 'three'
-import OrbitControls from 'three-orbitcontrols'
-import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader'
+import * as THREE from 'three' // 引入threeJS库
+import OrbitControls from 'three-orbitcontrols' // 引入鼠标控制模型的控制器
+import { MTLLoader, OBJLoader } from 'three-obj-mtl-loader' //  引入mtl文件加载器和obj文件加载器
+
+import html2canvas from 'html2canvas' // 引入截图库
+let timers = null
 export default {
   name: '',
   data() {
@@ -29,8 +36,11 @@ export default {
       Mtl_mode: '', // 加载后的mtl模型
       Png_model: '', // 加载后的png资源
       Object_rotationY: 0, // 模型对象旋转
-      Camera_distance: 200,
-      type: ''
+      Camera_distance: 300,
+      Current_Angle: 0, // 当模型
+      type: '',
+
+      controlPanel_IsShow: true // 工具栏是否显示
     }
   },
   mounted() {
@@ -46,20 +56,22 @@ export default {
       })
       const that = this
       this.scene = new THREE.Scene() // 创建场景
-      this.camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 220) / (window.innerHeight - 80), 1, 1000)
+      this.camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 200) / (window.innerHeight - 50), 1, 1000)
 
-      const renderWidth = window.innerWidth - 220
+      const renderWidth = window.innerWidth - 200
       const renderHeight = null
 
-      this.windowHalfX = (window.innerWidth - 220) / 2
-      this.windowHalfY = (window.innerHeight - 80) / 2
+      this.windowHalfX = (window.innerWidth - 200) / 2
+      this.windowHalfY = (window.innerHeight - 50) / 2
 
       this.container = document.querySelector('.model')
       this.camera.position.z = this.Camera_distance
       var light = new THREE.AmbientLight('#deebf7', 0.9) // soft white light
       this.scene.add(light)
-      this.renderer = new THREE.WebGLRenderer()
-      this.renderer.setSize(renderWidth, window.innerHeight - 80)
+      this.renderer = new THREE.WebGLRenderer({
+        preserveDrawingBuffer: true
+      })
+      this.renderer.setSize(renderWidth, window.innerHeight - 50)
       // this.renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
       this.container.appendChild(this.renderer.domElement)
 
@@ -73,11 +85,11 @@ export default {
       controls.addEventListener('change', render) // 监听鼠标、键盘事件
 
       function onWindowResize() {
-        that.windowHalfX = (window.innerWidth - 220) / 2
-        that.windowHalfY = (window.innerHeight - 80) / 2
-        that.camera.aspect = window.innerWidth / (window.innerHeight - 80)
+        that.windowHalfX = (window.innerWidth - 200) / 2
+        that.windowHalfY = (window.innerHeight - 50) / 2
+        that.camera.aspect = window.innerWidth / (window.innerHeight - 50)
         that.camera.updateProjectionMatrix()
-        that.renderer.setSize(renderWidth, window.innerHeight - 80)
+        that.renderer.setSize(renderWidth, window.innerHeight - 50)
       }
 
       function render() {
@@ -111,34 +123,105 @@ export default {
         this.Mtl_mode = materials
         // materials.preload()
         // OBJLoaders.setMaterials(materials)
-        OBJLoaders.load(ObjFile, object => {
-          this.Obejct_model = object
-          textureLoader.load(pngFile, texture => {
-            this.Png_model = texture
-            this.RednerModel()
-            this.loading.close()
-          })
-        },
-        onProgress,
-        onError
+        OBJLoaders.load(
+          ObjFile,
+          object => {
+            this.Obejct_model = object
+            textureLoader.load(pngFile, texture => {
+              this.Png_model = texture
+              this.RednerModel(1)
+              this.loading.close()
+            })
+          },
+          onProgress,
+          onError
         )
       })
     },
-    RednerModel() {
+    // 渲染模型
+    RednerModel(Object_rotationY) {
       // 设置旋转中心点
       this.Obejct_model.children[0].geometry.computeBoundingBox()
       this.Obejct_model.children[0].geometry.center()
       // this.type === 'Ipad' ? object.scale.set(3, 3, 3) : object.scale.set(0.1, 0.1, 0.1)
-      this.Obejct_model.rotation.y = this.Object_rotationY
+      this.Obejct_model.rotation.y = 0
       this.Obejct_model.children[0].material.map = this.Png_model
       this.Obejct_model.children[0].material.needsUpdate = true
       this.scene.add(this.Obejct_model)
       this.renderer.render(this.scene, this.camera)
-      // requestAnimationFrame()
     },
+    // 旋转模型
     switchAngle() {
-      this.Object_rotationY = 180
-      this.RednerModel()
+      if (timers) return
+      var run_num = this.Object_rotationY
+      this.Object_rotationY = Number(this.Object_rotationY) + Math.PI / 4
+      const run = () => {
+        if (run_num >= this.Object_rotationY) return
+        run_num = run_num + 0.05
+        this.Obejct_model.rotation.y = run_num
+        this.scene.add(this.Obejct_model)
+        this.renderer.render(this.scene, this.camera)
+        requestAnimationFrame(run)
+      }
+      run()
+      timers = setTimeout(() => {
+        timers = null
+      }, 500)
+    },
+    // 截图
+    jietu() {
+      this.controlPanel_IsShow = false
+      setTimeout(() => {
+        html2canvas(document.querySelector('.model > canvas'), {}).then(canvas => {
+          var imgData = canvas.toDataURL('image/png')
+          // 封装blob对象
+          // var data = dataURItoBlob(imgData)
+          // const blob = new Blob([imgData], { type: 'image/png' }) // 创建一个blob对象
+          // const url = window.URL.createObjectURL(blob) // 获取url
+          const link = document.createElement('a')
+          link.href = imgData
+          link.download = `${this.$tools.create_token()}.png` // 下载的文件名
+          link.click()
+          this.controlPanel_IsShow = true
+        })
+      }, 1000)
+    },
+    // 一键拍照生成截图
+    async onCreate() {
+      this.controlPanel_IsShow = false
+      this.Object_rotationY = 0
+      const len = 5
+
+      const PPP = () => {
+        return new Promise((res, rej) => {
+          var run_num = this.Object_rotationY
+          this.Object_rotationY = Number(this.Object_rotationY) + Math.PI / 4
+          const run = () => {
+            if (run_num >= this.Object_rotationY) {
+              html2canvas(document.querySelector('.model > canvas'), {}).then(canvas => {
+                var imgData = canvas.toDataURL('image/png')
+                const link = document.createElement('a')
+                link.href = imgData
+                link.download = `${this.$tools.create_token()}.png` // 下载的文件名
+                link.click()
+              })
+              res()
+              return
+            }
+            run_num = run_num + 0.05
+            this.Obejct_model.rotation.y = run_num
+            this.scene.add(this.Obejct_model)
+            this.renderer.render(this.scene, this.camera)
+            requestAnimationFrame(run)
+          }
+          run()
+        })
+      }
+
+      for (let i = 0; i < len; i++) {
+        await PPP()
+      }
+      // this.Object_rotationY = 0
     }
   }
 }
