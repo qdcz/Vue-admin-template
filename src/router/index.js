@@ -193,6 +193,14 @@ export const constantRoutes = [{
       title: '用户管理',
       icon: 'Users'
     }
+  }, {
+    path: '/YangPan/ArticleManager/ArticleList',
+    name: 'ArticleManager',
+    component: () => import('@/views/YangPan/ArticleManager/ArticleList'),
+    meta: {
+      title: '文章管理',
+      icon: 'Users'
+    }
   }]
 },
 {

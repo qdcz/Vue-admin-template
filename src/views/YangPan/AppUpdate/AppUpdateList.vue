@@ -31,21 +31,6 @@
       </el-form>
     </div>
 
-    <!-- 指定当前使用的版本 -->
-    <el-row v-if="false" type="flex" class="row-bg" justify="start" align="middle" :gutter="10">
-      <el-col :span="2"><div>Android版本</div></el-col>
-      <el-col :span="4">
-        <el-select v-model="CurrentUse_And" placeholder="当前使用的版本,慎重操作" style="padding: 10px 0; float: right;" @change="onSelCurrUse_And">
-          <el-option v-for="(i, j) in lists.filter(item => item.Os == 'Android')" :key="j" :label="i.Version" :value="i._id" />
-        </el-select>
-      </el-col>
-      <el-col :span="2"><div>IOS版本</div></el-col>
-      <el-col :span="4">
-        <el-select v-model="CurrentUse_IOS" placeholder="当前使用的版本,慎重操作" style="padding: 10px 0; float: right;" @change="onSelCurrUse_IOS">
-          <el-option v-for="(i, j) in lists.filter(item => item.Os == 'IOS')" :key="CurrentUse_IOS.length + j" :label="i.Version" :value="i._id" />
-        </el-select>
-      </el-col>
-    </el-row>
     <!-- 添加编辑的dialog -->
     <add-dialog :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
     <!-- 表格 -->
@@ -156,38 +141,6 @@ export default {
       // res = await getCurrentUse({ Os: 'Android' })
       // this.CurrentUse_And = res.data.data.Version
       // await CheckUpdate({Os: 'Android'})
-    },
-    // 选择当前使用的版本  andorid
-    async onSelCurrUse_And(e) {
-      const loading = this.$loading({
-        lock: true,
-        text: 'Loading',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      const res = await SetCurrentUse({ _id: e, Os: 'Android' })
-      loading.close()
-      this.$message({
-        type: 'success',
-        message: res.data.msg
-      })
-      this.getLists()
-    },
-    // 选择当前使用的版本  IOS
-    async onSelCurrUse_IOS(e) {
-      const loading = this.$loading({
-        lock: true,
-        text: 'Loading',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      const res = await SetCurrentUse({ _id: e, Os: 'IOS' })
-      loading.close()
-      this.$message({
-        type: 'success',
-        message: res.data.msg
-      })
-      this.getLists()
     },
 
     onAddVersion() {

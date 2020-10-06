@@ -1,18 +1,18 @@
 <template>
   <div class="dialogs">
-    <el-dialog title="修改个人信息" :visible.sync="isshowDialogs" width="60%" center @close="dialogClose">
+    <el-dialog title="修改文章信息" :visible.sync="isshowDialogs" width="60%" center @close="dialogClose">
       <el-form ref="form" :model="form" class="el-form" :rules="rules" label-width="80px" label-position="left">
-        <el-form-item label="账号" prop="account"><el-input v-model="form.account" size="large" disabled="disabled" /></el-form-item>
-        <el-form-item label="密码" prop="pwd"><el-input v-model="form.pwd" size="large" type="password" placeholder="请输入密码" /></el-form-item>
-        <el-form-item label="昵称" prop="Nickname"><el-input v-model="form.Nickname" size="large" placeholder="请输入昵称" /></el-form-item>
+        <el-form-item label="发布者" prop="Nickname"><el-input v-model="form.Nickname" size="large" disabled="disabled" /></el-form-item>
         <el-form-item>
+          <span style="color: red;">注意这边获取的图片是上传到serverless上的云存储的 这边上传的话要上传到oss上图片分开了</span>
+          <span style="color: red;display: block;">图片暂时不写修改 重新上传部分</span>
           <el-upload
             ref="upload"
             action=""
             class="avatar-uploader"
             list-type="picture-card"
             :auto-upload="false"
-            :limit="1"
+            :limit="9"
             :file-list="fileList"
             :before-upload="beforeImgUpload"
             :on-exceed="cover_handleExceed"
@@ -21,24 +21,14 @@
             :on-preview="ImgPreview"
             :on-change="singleFileChange"
           >
-            <!-- <img  :src="fileList[0].url" class="avatar"> -->
             <i class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
 
           <!-- 图片查看 -->
           <el-dialog :visible.sync="ImgDialog.Visible"><img width="100%" :src="ImgDialog.ImageUrl" alt=""></el-dialog>
         </el-form-item>
-        <el-form-item label="生日" prop="birth">
-          <el-col :span="11"><el-date-picker v-model="form.birth" placeholder="选择日期" format="yyyy 年 MM 月 dd 日" value-format="yyyy-MM-dd" style="width: 100%;" /></el-col>
-        </el-form-item>
-        <el-form-item label="简介" prop="introduce">
-          <el-input v-model="form.introduce" size="large" placeholder="简介" type="textarea" :autosize="{ minRows: 2, maxRows: 8 }" />
-        </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-select v-model="form.sex" placeholder="选择性别">
-            <el-option label="男" value="男" />
-            <el-option label="女" value="女" />
-          </el-select>
+        <el-form-item label="发布内容" prop="contents">
+          <el-input v-model="form.contents" size="large" placeholder="简介" type="textarea" :autosize="{ minRows: 4, maxRows: 10 }" />
         </el-form-item>
         <el-button class="submit-bth" type="primary" @click="onSubmit('form')">{{ dialogInfo._id ? '更新' : '发布' }}</el-button>
       </el-form>
@@ -49,7 +39,7 @@
 <script>
 const OSS = require('ali-oss')
 import { API$GetSts, API$DelOssFile } from '../../../../api/YangPan/OSS.js'
-import { API$UpdUser } from '../../../../api/YangPan/User.js'
+import { API$UpdArticle } from '../../../../api/YangPan/article.js'
 export default {
   props: ['isshowDialogs', 'dialogInfo'],
   data() {
@@ -62,40 +52,29 @@ export default {
         Visible: false
       },
       form: {
-        account: '',
         Nickname: '',
-        birth: '',
-        introduce: '',
-        pwd: '',
-        sex: ''
+        contents: ''
       },
       rules: {
-        Nickname: [{ required: true, message: '昵称不能为空', trigger: 'change' }],
-        birth: [{ required: true, message: '生日不能为空', trigger: 'change' }],
-        introduce: [{ required: true, message: '简介不能为空', trigger: 'change' }]
+        birth: [{ required: true, message: '生日不能为空', trigger: 'change' }]
       }
     }
   },
   watch: {
     dialogInfo() {
-      this.form.account = this.dialogInfo.account
-      this.form.Nickname = this.dialogInfo.Nickname
-      this.form.birth = this.dialogInfo.birth
-      this.form.introduce = this.dialogInfo.introduce
-      this.form.sex = this.dialogInfo.sex
+      this.form.Nickname = this.dialogInfo.UserInfo[0].Nickname
+      this.form.contents = this.dialogInfo.contents
 
-      this.fileList = this.dialogInfo.avatar
-        ? [
-          {
-            name: 'test',
-            url: this.dialogInfo.avatar
-          }
-        ]
-        : []
+      for (let i = 0, item; (item = this.dialogInfo.imgList[i]); i++) {
+        this.fileList.push({
+          name: item.fileid,
+          url: item.tempFileURL
+        })
+      }
     }
   },
   async created() {
-    this.GetOssSts()
+    // this.GetOssSts()
   },
   methods: {
     // 上传文件之前的钩子
@@ -180,11 +159,11 @@ export default {
     },
     // 更新数据
     async UpdAPI() {
-      const avatar = this.fileList.length > 0 ? this.fileList[0].url : ''
-      const json = Object.assign({ _id: this.dialogInfo._id, avatar }, this.form)
+      // const avatar = this.fileList.length > 0 ? this.fileList[0].url : ''
+      const json = Object.assign({ _id: this.dialogInfo._id }, this.form)
       console.warn(json)
       try {
-        const { code, msg } = await API$UpdUser(json)
+        const { code, msg } = await API$UpdArticle(json)
         if (code === 200) {
           this.$message({
             message: msg,
@@ -257,12 +236,8 @@ export default {
     // 清空表单
     clear_form() {
       this.form = {
-        account: '',
         Nickname: '',
-        birth: '',
-        introduce: '',
-        pwd: '',
-        sex: ''
+        contents: ''
       }
       this.fileList = []
     },
@@ -306,7 +281,6 @@ export default {
       } catch (e) {
         this.$message.error(e)
       } finally {
-
       }
     }
   }
