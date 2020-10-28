@@ -270,7 +270,7 @@ export default {
       const {
         code,
         msg,
-        Sts: { credentials }
+        data: { credentials }
       } = await API$GetSts()
       if (code === 200) {
         this.ali_oss = new OSS({

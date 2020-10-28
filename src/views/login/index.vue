@@ -54,6 +54,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import JSEncrypt from 'jsencrypt/bin/jsencrypt'
 
 export default {
   name: 'Login',
@@ -93,6 +94,19 @@ export default {
       },
       immediate: true
     }
+  },
+  created() {
+    let pubKey =
+    	`-----BEGIN PUBLIC KEY-----
+    		MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCxaE0pR7Kw/LnRk2QhzN+kkwKT
+    		RrimPxO7PqH7TcQ1mp94HtCVj1WVSIosZsS5N1DDJgKDOIbQS04Tq+J47/VpaW9H
+    		MAXSjZwQ03euN5Z7a0v/8H/aXw4OJgzdBPillwaahaUAlpQjJXIlGvslIw93f5uE
+    		eNRvG9otLKTBlz+tPwIDAQAB
+    		-----END PUBLIC KEY-----`
+    let $JSEncrypt  = new JSEncrypt()	// 创建实例 
+    $JSEncrypt.setPublicKey(pubKey) // 设置公钥
+    this.loginForm.account = $JSEncrypt.encrypt(this.loginForm.account)
+    this.loginForm.pwd = $JSEncrypt.encrypt(this.loginForm.pwd)
   },
   methods: {
     showPwd() {
