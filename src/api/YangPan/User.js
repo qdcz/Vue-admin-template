@@ -1,5 +1,16 @@
 import request from '@/utils/request'
 
+
+// 用户登录
+export const API$APILogin = (data) => {
+  const R = Object.assign({ type: 'APILogin' }, data)
+  return request({
+    url: '/YangPanAdmin',
+    method: 'post',
+    data: R
+  })
+}
+
 // 获取用户列表
 export const API$SelUserListt = (data) => {
   const R = Object.assign({ type: 'SelUserList' }, data)
