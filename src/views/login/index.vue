@@ -76,7 +76,7 @@ export default {
     return {
       loginForm: {
         account: '15892023484',
-        pwd: 'q111111111111111'
+        pwd: '123456'
       },
       loginRules: {
         account: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -103,10 +103,12 @@ export default {
     		MAXSjZwQ03euN5Z7a0v/8H/aXw4OJgzdBPillwaahaUAlpQjJXIlGvslIw93f5uE
     		eNRvG9otLKTBlz+tPwIDAQAB
     		-----END PUBLIC KEY-----`
-    let $JSEncrypt  = new JSEncrypt()	// 创建实例 
+    let $JSEncrypt  = new JSEncrypt()	// 创建实例
     $JSEncrypt.setPublicKey(pubKey) // 设置公钥
     this.loginForm.account = $JSEncrypt.encrypt(this.loginForm.account)
     this.loginForm.pwd = $JSEncrypt.encrypt(this.loginForm.pwd)
+
+    // this.$store.dispatch('user/register', this.loginForm)
   },
   methods: {
     showPwd() {

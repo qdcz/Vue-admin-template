@@ -1,9 +1,29 @@
 import request from '@/utils/request'
 
+// 登录接口
 export function login(data) {
-  const R = Object.assign({ type: 'APILogin' }, data)
+  const R = Object.assign({ type: 'Login' }, data)
   return request({
-    url: '/YangPan',
+    url: '/YangPanAdmin',
+    method: 'post',
+    data: R
+  })
+}
+// 注册接口
+export function Register(data) {
+  const R = Object.assign({ type: 'Register' }, data)
+  return request({
+    url: '/YangPanAdmin',
+    method: 'post',
+    data: R
+  })
+}
+
+// 获取用户信息接口
+export function GetUserInfo(data) {
+  const R = Object.assign({ type: 'GetUserInfo' }, data)
+  return request({
+    url: '/YangPanAdmin',
     method: 'post',
     data: R
   })
