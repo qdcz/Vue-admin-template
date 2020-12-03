@@ -11,14 +11,19 @@
           <span>{{ scope.row.Version }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="版本" show-overflow-tooltip sortable prop="Os">
+      <el-table-column width="100" align="center" label="版本" show-overflow-tooltip prop="Os">
         <template slot-scope="scope">
           <span>{{ scope.row.Os }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="是否强制更新" show-overflow-tooltip sortable prop="forceUpdate">
+      <el-table-column width="200" align="center" label="AppId" show-overflow-tooltip prop="AppId">
         <template slot-scope="scope">
-          <span>{{ scope.row.forceUpdate }}</span>
+          <span>{{ scope.row.AppId }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="110" align="center" label="是否强制更新" show-overflow-tooltip prop="forceUpdate">
+        <template slot-scope="scope">
+          <span>{{ scope.row.forceUpdate ==='YES'?'是':'否' }}</span>
         </template>
       </el-table-column>
       <el-table-column min-width="160" align="center" label="版本内容" show-overflow-tooltip sortable prop="content">

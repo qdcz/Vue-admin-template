@@ -55,10 +55,9 @@
 </template>
 
 <script>
-// const COS = require('cos-js-sdk-v5')
 const OSS = require('ali-oss')
-import { API$GetSts } from '../../../../api/YangPan/OSS.js'
 import { API$AddUpdateVersion, API$UpdVersiont } from '../../../../api/YangPan/UploadApp.js'
+import { mapGetters } from 'vuex'
 export default {
   props: ['isshowDialogs', 'dialogInfo'],
   data() {
@@ -95,8 +94,13 @@ export default {
       this.licenseImageUrl = this.dialogInfo.licenseImageUrl
     }
   },
-  async created() {
-    this.GetOssSts()
+  computed: {
+    ...mapGetters(['STS'])
+  },
+  mounted() {
+    this.$nextTick(()=>{
+      this.GetOssSts()
+    })
   },
   methods: {
     // 提交信息
@@ -267,24 +271,13 @@ export default {
     },
     // 初始化oss
     async GetOssSts() {
-      const {
-        code,
-        msg,
-        data: { credentials }
-      } = await API$GetSts()
-      if (code === 200) {
-        this.ali_oss = new OSS({
-          region: 'oss-cn-hangzhou',
-          accessKeyId: credentials.AccessKeyId,
-          accessKeySecret: credentials.AccessKeySecret,
-          stsToken: credentials.SecurityToken,
-          bucket: 'qdds666'
-        })
-        this.$message({
-          message: msg,
-          type: 'success'
-        })
-      }
+      this.ali_oss = new OSS({
+        region: 'oss-cn-hangzhou',
+        accessKeyId: this.STS.credentials.AccessKeyId,
+        accessKeySecret: this.STS.credentials.AccessKeySecret,
+        stsToken: this.STS.credentials.SecurityToken,
+        bucket: 'qdds666'
+      })
     }
   }
 }

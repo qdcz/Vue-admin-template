@@ -3,8 +3,8 @@
     <!-- 查询条件 -->
     <div class="filter-container">
       <el-form :inline="true" :model="QuerySelect" size="mini">
-        <el-form-item label="APPID"><el-input v-model="QuerySelect.APPID" size="mini" placeholder="请输入APPID" /></el-form-item>
-        <el-form-item label="版本号" prop="Version"><el-input v-model="QuerySelect.Version" size="mini" placeholder="请输入版本号" /></el-form-item>
+        <el-form-item label="APPID"><el-input v-model="QuerySelect.APPID" size="mini" placeholder="请输入APPID" clearable /></el-form-item>
+        <el-form-item label="版本号" prop="Version"><el-input v-model="QuerySelect.Version" size="mini" placeholder="请输入版本号" clearable /></el-form-item>
         <el-form-item label="版本更新内容" prop="content"><el-input v-model="QuerySelect.content" clearable size="mini" placeholder="请输入版本更新内容" /></el-form-item>
         <el-form-item label="强制更新">
           <el-select v-model="QuerySelect.forceUpdate" clearable style="width:150px" placeholder="是否强制更新">
@@ -38,7 +38,7 @@
     <!-- 分页器 -->
     <div class=" mt20">
       <el-pagination
-        :current-page="QuerySelect.pageNum"
+        :current-page.sync="QuerySelect.pageNum + 1"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="QuerySelect.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -136,11 +136,6 @@ export default {
       } finally {
         this.listLoading = false
       }
-      // res = await getCurrentUse({ Os: 'IOS' })
-      // this.CurrentUse_IOS = res.data.data.Version
-      // res = await getCurrentUse({ Os: 'Android' })
-      // this.CurrentUse_And = res.data.data.Version
-      // await CheckUpdate({Os: 'Android'})
     },
 
     onAddVersion() {

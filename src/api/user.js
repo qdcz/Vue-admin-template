@@ -29,6 +29,16 @@ export function GetUserInfo(data) {
   })
 }
 
+// 获取临时Sts权限
+export function GetSts(data) {
+  const R = Object.assign({ type: 'GetSts' }, data)
+  return request({
+    url: '/YangPanAdmin',
+    method: 'post',
+    data: R
+  })
+}
+
 export function getInfo(token) {
   return request({
     url: '/vue-admin-template/user/info',

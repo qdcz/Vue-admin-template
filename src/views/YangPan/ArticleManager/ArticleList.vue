@@ -17,10 +17,10 @@
             <el-option :value="false" label="停用中" />
           </el-select>
         </el-form-item>
-        <el-form-item label="注册时间">
-          <el-date-picker v-model="QuerySelect.registerTimeBeginTime" style="width: 180px;" clearable type="date" placeholder="选择起始日期" format="yyyy-MM-dd HH:mm:ss" />
+        <el-form-item label="发布时间">
+          <el-date-picker v-model="QuerySelect.PublishBeginTime" style="width: 180px;" clearable type="date" placeholder="选择起始日期" format="yyyy-MM-dd HH:mm:ss" />
           -
-          <el-date-picker v-model="QuerySelect.registerTimeEndTime" style="width: 180px;" clearable type="date" placeholder="选择结束日期" format="yyyy-MM-dd HH:mm:ss" />
+          <el-date-picker v-model="QuerySelect.PublishEndTime" style="width: 180px;" clearable type="date" placeholder="选择结束日期" format="yyyy-MM-dd HH:mm:ss" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" @click="onSelect">查询</el-button>
@@ -32,7 +32,20 @@
 
     <!-- 添加编辑的dialog -->
     <add-dialog :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
-    <tables class="mt20" :list="DataList" :list-loading.sync="listLoading" :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
+    <tables class="mt20" :list="DataList" :list-loading.sync="listLoading" :isshow-dialogs.sync="isshowDialogs"
+    :dialog-info.sync="DialogInfo" @updateList="getLists" />
+    <!-- 分页器 -->
+    <div class=" mt20">
+      <el-pagination
+        :current-page="QuerySelect.pageNum + 1"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="QuerySelect.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -52,12 +65,9 @@ export default {
         Nickname: '',
         account: '',
         sex: '',
-        Region: '',
         IsCurrentUse: '',
-        birthBeginTime: '',
-        birthEndTime: '',
-        registerTimeBeginTime: '',
-        registerTimeEndTime: ''
+        PublishBeginTime: '',
+        PublishEndTime: ''
       },
 
       listLoading: false,
@@ -85,13 +95,23 @@ export default {
         Nickname: '',
         account: '',
         sex: '',
-        Region: '',
         IsCurrentUse: '',
-        birthBeginTime: '',
-        birthEndTime: '',
-        registerTimeBeginTime: '',
-        registerTimeEndTime: ''
+        PublishBeginTime: '',
+        PublishEndTime: ''
       }
+    },
+    // 分页器 条数发生变化
+    handleSizeChange(val) {
+      this.QuerySelect.pageSize = val
+      this.QuerySelect.pageNum = 0
+      const json = JSON.parse(JSON.stringify(this.QuerySelect))
+      this.getLists(json)
+    },
+    // 分页器 页数发生变化
+    handleCurrentChange(val) {
+      this.QuerySelect.pageNum = val - 1
+      const json = JSON.parse(JSON.stringify(this.QuerySelect))
+      this.getLists(json)
     },
     async getLists(json) {
       json = json || { pageNum: this.QuerySelect.pageNum, pageSize: this.QuerySelect.pageSize }

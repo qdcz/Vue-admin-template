@@ -62,7 +62,7 @@ export default {
   },
   watch: {
     dialogInfo() {
-      this.form.Nickname = this.dialogInfo.UserInfo[0].Nickname
+      this.form.Nickname = this.dialogInfo.UserInfo.Nickname
       this.form.contents = this.dialogInfo.contents
 
       for (let i = 0, item; (item = this.dialogInfo.imgList[i]); i++) {
@@ -249,24 +249,13 @@ export default {
     /** *****************************************************************  OSS处理部分****************************************************/
     // 初始化oss
     async GetOssSts() {
-      const {
-        code,
-        msg,
-        Sts: { credentials }
-      } = await API$GetSts()
-      if (code === 200) {
-        this.ali_oss = new OSS({
-          region: 'oss-cn-hangzhou',
-          accessKeyId: credentials.AccessKeyId,
-          accessKeySecret: credentials.AccessKeySecret,
-          stsToken: credentials.SecurityToken,
-          bucket: 'qdds666'
-        })
-        this.$message({
-          message: msg,
-          type: 'success'
-        })
-      }
+      this.ali_oss = new OSS({
+        region: 'oss-cn-hangzhou',
+        accessKeyId: this.STS.credentials.AccessKeyId,
+        accessKeySecret: this.STS.credentials.AccessKeySecret,
+        stsToken: this.STS.credentials.SecurityToken,
+        bucket: 'qdds666'
+      })
     },
     // 删除oss文件
     async DelOssFile(dir) {

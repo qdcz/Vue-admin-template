@@ -6,32 +6,37 @@
           <span>{{ scope.row.i }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="发布者" show-overflow-tooltip prop="Nickname">
+      <el-table-column width="120" align="center" label="发布者姓名" show-overflow-tooltip prop="Nickname">
         <template slot-scope="scope">
-          <span>{{ scope.row.UserInfo[0].Nickname }}</span>
+          <span>{{ scope.row.UserInfo.Nickname || '暂未设置昵称'  }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="发布者ID" show-overflow-tooltip prop="_id">
+      <el-table-column width="100" align="center" label="性别" show-overflow-tooltip prop="sex">
         <template slot-scope="scope">
-          <span>{{ scope.row.UserInfo[0]._id }}</span>
+          <span>{{ scope.row.UserInfo.sex || '暂未设置' }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="观看人数" show-overflow-tooltip sortable prop="viewCount">
+      <el-table-column width="160" align="center" label="发布者ID" show-overflow-tooltip prop="account">
+        <template slot-scope="scope">
+          <span>{{ scope.row.UserInfo.account }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="100" align="center" label="观看数" show-overflow-tooltip sortable prop="viewCount">
         <template slot-scope="scope">
           <span>{{ scope.row.viewCount }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="评论人数" show-overflow-tooltip sortable prop="CommonList">
+      <el-table-column width="100" align="center" label="评论数" show-overflow-tooltip sortable prop="CommonList">
         <template slot-scope="scope">
           <span>{{ scope.row.CommonList.length }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="点赞人数" show-overflow-tooltip sortable prop="likeList">
+      <el-table-column width="100" align="center" label="点赞数" show-overflow-tooltip sortable prop="likeList">
         <template slot-scope="scope">
           <span>{{ scope.row.likeList.length }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="120" align="center" label="分享次数" show-overflow-tooltip sortable prop="shareList">
+      <el-table-column width="100" align="center" label="分享数" show-overflow-tooltip sortable prop="shareList">
         <template slot-scope="scope">
           <span>{{ scope.row.shareList.length }}</span>
         </template>
@@ -42,10 +47,10 @@
           <span>{{ scope.row.contents || '暂无文字' }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="发布时间" align="center" prop="PublishTime" :formatter="formatDate" width="200" />
-      <el-table-column width="100" align="center" label="状态" sortable prop="auditState">
+      <el-table-column label="发布时间" align="center" prop="PublishTime" :formatter="formatDate" sortable width="160" />
+      <el-table-column width="100" align="center" label="文章是否违规" sortable prop="auditState">
         <template slot-scope="scope">
-          <span>{{ scope.row.IsCurrentUse ? '启用中' : '停用中' }}</span>
+          <span>{{ scope.row.IsCurrentUse ? '违规' : '正常' }}</span>
         </template>
       </el-table-column>
       <el-table-column width="260" align="center" label="操作" class-name="small-padding fixed-width">

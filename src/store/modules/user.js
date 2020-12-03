@@ -1,12 +1,15 @@
-import {login,Register,logout,GetUserInfo} from '@/api/user'
-import {getToken,setToken,removeToken} from '@/utils/auth'
-import { resetRouter} from '@/router'
+import {login,Register,logout,GetUserInfo,GetSts} from '@/api/user'
+import {getToken,setToken,removeToken,
+        getSts,setSts,removeSts,
+        getUserInfo,setUserInfo,removeUserInfo} from '@/utils/auth'
+import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
-    token: getToken(),
-    name: '',
-    avatar: ''
+    token:getToken(),
+    name: getUserInfo() ? JSON.parse(getUserInfo()).name : '',
+    avatar: getUserInfo() ? JSON.parse(getUserInfo()).avatar : '',
+    STS:getSts()
   }
 }
 
@@ -24,6 +27,10 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_STS: (state, STS) => {
+    state.STS = STS
+    setSts(STS)
   }
 }
 
@@ -33,8 +40,9 @@ const actions = {
     const {account,pwd} = userInfo
     return new Promise((resolve, reject) => {
       login({ account: account.trim(), pwd}).then(response => {
-        const { Token } = response
+        const { Token,Sts } = response
         commit('SET_TOKEN', Token)
+        commit('SET_STS', Sts)
         setToken(Token)
         resolve()
       }).catch(error => {
@@ -66,7 +74,8 @@ const actions = {
         const {name,avatar} = result
         commit('SET_NAME', name?name:"暂未设置")
         commit('SET_AVATAR', avatar?avatar:"https://cdnforspeed.oss-cn-beijing.aliyuncs.com/Img/YangPanAdmin/testImg.jpg")
-        resolve(result)
+        setUserInfo(result)
+        resolve()
       }).catch(error => {
         reject(error)
       })
@@ -78,6 +87,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       removeToken() // must remove  token  first
       resetRouter()
+      removeSts()
+      removeUserInfo()
       resolve()
     })
   },
@@ -88,6 +99,19 @@ const actions = {
       removeToken() // must remove  token  first
       commit('RESET_STATE')
       resolve()
+    })
+  },
+
+  // 获取Sts临时权限
+  getSts({commit},data){
+    return new Promise(resolve => {
+      GetSts({expiration:data.expiration}).then(response => {
+        setSts(response.Sts)
+        // console.log( response.Sts )
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
     })
   }
 }
