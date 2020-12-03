@@ -38,8 +38,9 @@
 
 <script>
 const OSS = require('ali-oss')
-import { API$GetSts, API$DelOssFile } from '../../../../api/YangPan/OSS.js'
+import { API$DelOssFile } from '../../../../api/YangPan/OSS.js'
 import { API$UpdArticle } from '../../../../api/YangPan/article.js'
+import { mapGetters } from 'vuex'
 export default {
   props: ['isshowDialogs', 'dialogInfo'],
   data() {
@@ -73,8 +74,11 @@ export default {
       }
     }
   },
-  async created() {
-    // this.GetOssSts()
+  computed: {
+    ...mapGetters(['STS'])
+  },
+  async mounted() {
+    this.GetOssSts()
   },
   methods: {
     // 上传文件之前的钩子

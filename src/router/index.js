@@ -57,36 +57,6 @@ export const constantRoutes = [{
   }]
 },
 
-{
-  path: '/1111',
-  component: Layout,
-  redirect: '/WebGL/table',
-  name: 'WebGL',
-  meta: {
-    title: 'WebGL',
-    icon: 'el-icon-s-help'
-  },
-  children: [{
-    path: 'ModelList',
-    name: 'ModelList',
-    component: () => import('@/views/table/index'),
-    meta: {
-      title: 'ModelList',
-      icon: 'table'
-    }
-  },
-  {
-    path: 'tree',
-    name: 'Tree',
-    component: () => import('@/views/tree/index'),
-    meta: {
-      title: 'Tree',
-      icon: 'tree'
-    }
-  }
-  ]
-},
-
 /** ************************************************WebGl部分******************************************************************************/
 {
   path: '/WebGL',
@@ -95,7 +65,7 @@ export const constantRoutes = [{
   name: 'WebGL',
   meta: {
     title: 'WebGL',
-    icon: 'quick'
+    icon: '3D'
   },
   children: [{
     path: '/WebGL/ModelList',
@@ -199,7 +169,7 @@ export const constantRoutes = [{
     component: () => import('@/views/YangPan/ArticleManager/ArticleList'),
     meta: {
       title: '文章管理',
-      icon: 'Users'
+      icon: 'Article'
     }
   }]
 },

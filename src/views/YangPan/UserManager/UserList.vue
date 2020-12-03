@@ -11,7 +11,9 @@
             <el-option value="女" label="女" />
           </el-select>
         </el-form-item>
-        <el-form-item label="城市" prop="Region"><city-select @change="CitySelectOnchange" /></el-form-item>
+        <el-form-item label="城市" prop="Region">
+          <city-select @change="CitySelectOnchange" :_provinceId='QuerySelect.provinceId' :_cityId='QuerySelect.cityId' :_areaId='QuerySelect.areaId'/>
+        </el-form-item>
         <el-form-item label="使用状态">
           <el-select v-model="QuerySelect.IsCurrentUse" clearable style="width:150px" placeholder="选择使用状态">
             <el-option :value="true" label="使用中" />
@@ -39,6 +41,20 @@
     <!-- 添加编辑的dialog -->
     <add-dialog :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
     <tables class="mt20" :list="DataList" :list-loading.sync="listLoading" :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
+
+
+    <!-- 分页器 -->
+    <div class=" mt20">
+      <el-pagination
+        :current-page="QuerySelect.pageNum + 1"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="QuerySelect.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
@@ -64,7 +80,11 @@ export default {
         birthBeginTime: '',
         birthEndTime: '',
         registerTimeBeginTime: '',
-        registerTimeEndTime: ''
+        registerTimeEndTime: '',
+
+        provinceId:"",
+        cityId:"",
+        areaId:""
       },
 
       listLoading: false,
@@ -81,11 +101,31 @@ export default {
     onAddUser() {
       this.isshowDialogs = true
     },
+    CitySelectOnchange(e){
+      this.QuerySelect.provinceId = e.provinceId
+      this.QuerySelect.cityId = e.cityId
+      this.QuerySelect.areaId = e.areaId
+      let arr = [e.provinceName,e.cityName,e.areaName]
+      this.QuerySelect.Region = arr[0]? arr[0] + (arr[1]? '-'+arr[1]: "") + (arr[2]? '-'+arr[2]: "") : ""
+    },
     onSelect() {
       const json = JSON.parse(JSON.stringify(this.QuerySelect))
       // console.log(new Date(`${this.QuerySelect['registerTimeBeginTime'].getTime()}`))
       // json['registerTimeBeginTime'] = this.QuerySelect['registerTimeBeginTime'].getTime() || ''
       // json['registerTimeEndTime'] = this.QuerySelect['registerTimeEndTime'].getTime() || ''
+      this.getLists(json)
+    },
+    // 分页器 条数发生变化
+    handleSizeChange(val) {
+      this.QuerySelect.pageSize = val
+      this.QuerySelect.pageNum = 0
+      const json = JSON.parse(JSON.stringify(this.QuerySelect))
+      this.getLists(json)
+    },
+    // 分页器 页数发生变化
+    handleCurrentChange(val) {
+      this.QuerySelect.pageNum = val - 1
+      const json = JSON.parse(JSON.stringify(this.QuerySelect))
       this.getLists(json)
     },
     onReset() {
@@ -100,7 +140,11 @@ export default {
         birthBeginTime: '',
         birthEndTime: '',
         registerTimeBeginTime: '',
-        registerTimeEndTime: ''
+        registerTimeEndTime: '',
+
+        provinceId:"",
+        cityId:"",
+        areaId:""
       }
     },
     async getLists(json) {

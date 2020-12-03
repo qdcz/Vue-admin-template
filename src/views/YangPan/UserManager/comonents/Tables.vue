@@ -11,12 +11,17 @@
           <span>{{ scope.row.Nickname || '暂未设置' }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" align="center" label="账号" show-overflow-tooltip sortable prop="Os">
+      <el-table-column width="140" align="center" label="账号" show-overflow-tooltip sortable prop="Os">
         <template slot-scope="scope">
           <span>{{ scope.row.account }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200" align="center" label="城市" show-overflow-tooltip sortable prop="forceUpdate">
+      <el-table-column width="140" align="center" label="账号类型" show-overflow-tooltip sortable prop="Os">
+        <template slot-scope="scope">
+          <span>{{ scope.row.way?'第三方登录:'+scope.row.way : '原生用户' }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column width="200" align="center" label="地区" show-overflow-tooltip sortable prop="forceUpdate">
         <template slot-scope="scope">
           <span>{{ scope.row.Region || '暂未设置' }}</span>
         </template>
@@ -39,7 +44,7 @@
       <el-table-column label="注册时间" align="center" prop="registerTime" :formatter="formatDate" width="200" />
       <el-table-column width="100" align="center" label="状态" sortable prop="auditState">
         <template slot-scope="scope">
-          <span>{{ scope.row.IsCurrentUse ? '启用中' : '停用中' }}</span>
+          <span>{{ scope.row.IsCurrentUse ? '使用中' : '禁用中' }}</span>
         </template>
       </el-table-column>
       <el-table-column width="260" align="center" label="操作" class-name="small-padding fixed-width">
@@ -103,14 +108,6 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)'
         })
-        const { code, msg } = await API$UpdCurrentUse({ Os: e.Os, _id: e._id })
-        if (code === 200) {
-          this.$message({
-            message: msg,
-            type: 'success'
-          })
-          this.$emit('updateList')
-        }
       } catch (e) {
         console.log(e)
       } finally {
