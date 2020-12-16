@@ -26,9 +26,7 @@ import Layout from '@/layout'
  */
 
 /**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
+常用的路由配置表，无需配置权限显示与否
  */
 export const constantRoutes = [{
   path: '/login',
@@ -55,125 +53,7 @@ export const constantRoutes = [{
       icon: 'dashboard'
     }
   }]
-},
-
-/** ************************************************WebGl部分******************************************************************************/
-{
-  path: '/WebGL',
-  component: Layout,
-  redirect: '/WebGL/ModelList',
-  name: 'WebGL',
-  meta: {
-    title: 'WebGL',
-    icon: '3D'
-  },
-  children: [{
-    path: '/WebGL/ModelList',
-    name: 'ModelList',
-    component: () => import('@/views/WebGl/ModelList'),
-    meta: {
-      title: '模型列表',
-      icon: 'table'
-    }
-  },
-  {
-    path: '/WebGl/ModelShow',
-    name: 'ModelShow',
-    component: () => import('@/views/WebGl/ModelShow'),
-    meta: {
-      title: '模型展示',
-      icon: 'UploadImg'
-    }
-  }
-  ]
-},
-
-/** ************************************************快速模板部分******************************************************************************/
-{
-  path: '/fastTemplate',
-  component: Layout,
-  redirect: '/fastTemplate/index',
-  name: 'fastTemplate',
-  meta: {
-    title: '快速模板',
-    icon: 'quick'
-  },
-  children: [{
-    path: '/fastTemplate/index',
-    name: 'fastTemplate-index',
-    component: () => import('@/views/fastTemplate/index'),
-    meta: {
-      title: 'fastTemplate-index',
-      icon: 'table'
-    }
-  },
-  {
-    path: '/fastTemplate/ImgUpload',
-    name: 'fastTemplate-ImgUpload',
-    component: () => import('@/views/fastTemplate/ImgUpload/index'),
-    meta: {
-      title: '图片上传',
-      icon: 'UploadImg'
-    }
-  },
-  {
-    path: '/fastTemplate/formValidate',
-    name: 'fastTemplate-formValidate',
-    component: () => import('@/views/fastTemplate/formValidate/index'),
-    meta: {
-      title: '表单验证',
-      icon: 'formValidate'
-    }
-  },
-  {
-    path: '/fastTemplate/Table',
-    name: 'fastTemplate-Table',
-    component: () => import('@/views/fastTemplate/Table/index'),
-    meta: {
-      title: '表格',
-      icon: 'table'
-    }
-  }
-  ]
-},
-
-/** ************************************************洋网盘后端部分******************************************************************************/
-{
-  path: '/YangPan',
-  component: Layout,
-  redirect: '/YangPan/AppUpdate/AppUpdateList',
-  name: 'AppUpdateList',
-  meta: {
-    title: '洋盘',
-    icon: 'YangPan'
-  },
-  children: [{
-    path: '/YangPan/AppUpdate/AppUpdateList',
-    name: 'AppUpdateList',
-    component: () => import('@/views/YangPan/AppUpdate/AppUpdateList'),
-    meta: {
-      title: 'APP版本管理',
-      icon: 'Version'
-    }
-  }, {
-    path: '/YangPan/UserManager/UserList',
-    name: 'UserManager',
-    component: () => import('@/views/YangPan/UserManager/UserList'),
-    meta: {
-      title: '用户管理',
-      icon: 'Users'
-    }
-  }, {
-    path: '/YangPan/ArticleManager/ArticleList',
-    name: 'ArticleManager',
-    component: () => import('@/views/YangPan/ArticleManager/ArticleList'),
-    meta: {
-      title: '文章管理',
-      icon: 'Article'
-    }
-  }]
-},
-{
+},{
   path: '/form',
   component: Layout,
   children: [{
@@ -277,12 +157,140 @@ export const constantRoutes = [{
 }
 ]
 
+
+//  动态路由--用来按权限分配显示的路由
+export const asyncRoutes = [
+  /** ************************************************WebGl部分******************************************************************************/
+  {
+    path: '/WebGL',
+    component: Layout,
+    redirect: '/WebGL/ModelList',
+    name: 'WebGL',
+    meta: {
+      title: 'WebGL',
+      icon: '3D'
+    },
+    children: [{
+      path: '/WebGL/ModelList',
+      name: 'ModelList',
+      component: () => import('@/views/WebGl/ModelList'),
+      meta: {
+        title: '模型列表',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/WebGl/ModelShow',
+      name: 'ModelShow',
+      component: () => import('@/views/WebGl/ModelShow'),
+      meta: {
+        title: '模型展示',
+        icon: 'UploadImg'
+      }
+    }
+    ]
+  },
+
+  /** ************************************************快速模板部分******************************************************************************/
+  {
+    path: '/fastTemplate',
+    component: Layout,
+    redirect: '/fastTemplate/index',
+    name: 'fastTemplate',
+    meta: {
+      title: '快速模板',
+      icon: 'quick'
+    },
+    children: [{
+      path: '/fastTemplate/index',
+      name: 'fastTemplate-index',
+      component: () => import('@/views/fastTemplate/index'),
+      meta: {
+        title: 'fastTemplate-index',
+        icon: 'table'
+      }
+    },
+    {
+      path: '/fastTemplate/ImgUpload',
+      name: 'fastTemplate-ImgUpload',
+      component: () => import('@/views/fastTemplate/ImgUpload/index'),
+      meta: {
+        title: '图片上传',
+        icon: 'UploadImg'
+      }
+    },
+    {
+      path: '/fastTemplate/formValidate',
+      name: 'fastTemplate-formValidate',
+      component: () => import('@/views/fastTemplate/formValidate/index'),
+      meta: {
+        title: '表单验证',
+        icon: 'formValidate'
+      }
+    },
+    {
+      path: '/fastTemplate/Table',
+      name: 'fastTemplate-Table',
+      component: () => import('@/views/fastTemplate/Table/index'),
+      meta: {
+        title: '表格',
+        icon: 'table'
+      }
+    }
+    ]
+  },
+
+  /** ************************************************洋网盘后端部分******************************************************************************/
+  {
+    path: '/YangPan',
+    component: Layout,
+    redirect: '/YangPan/AppUpdate/AppUpdateList',
+    name: 'AppUpdateList',
+    meta: {
+      title: '洋盘',
+      icon: 'YangPan'
+    },
+    children: [{
+      path: '/YangPan/AppUpdate/AppUpdateList',
+      name: 'AppUpdateList',
+      component: () => import('@/views/YangPan/AppUpdate/AppUpdateList'),
+      meta: {
+        title: 'APP版本管理',
+        icon: 'Version'
+      }
+    }, {
+      path: '/YangPan/UserManager/UserList',
+      name: 'UserManager',
+      component: () => import('@/views/YangPan/UserManager/UserList'),
+      meta: {
+        title: '用户管理',
+        icon: 'Users'
+      }
+    }, {
+      path: '/YangPan/ArticleManager/ArticleList',
+      name: 'ArticleManager',
+      component: () => import('@/views/YangPan/ArticleManager/ArticleList'),
+      meta: {
+        title: '文章管理',
+        icon: 'Article'
+      }
+    },{
+      path: '/YangPan/AuthorityManager/AuthorityManager',
+      name: 'ArticleManager',
+      component: () => import('@/views/YangPan/AuthorityManager/AuthorityManager'),
+      meta: {
+        title: '权限管理',
+        icon: 'Article'
+      }
+    }]
+  }
+]
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({
     y: 0
   }),
-  routes: constantRoutes
+  routes: constantRoutes.concat(asyncRoutes)
 })
 
 const router = createRouter()
