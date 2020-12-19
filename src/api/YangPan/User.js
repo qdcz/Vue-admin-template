@@ -1,17 +1,6 @@
 import request from '@/utils/request'
 
-
-// 用户登录
-export const API$APILogin = (data) => {
-  const R = Object.assign({ type: 'APILogin' }, data)
-  return request({
-    url: '/YangPanAdmin',
-    method: 'post',
-    data: R
-  })
-}
-
-// 获取用户列表
+// 获取用户列表(app)
 export const API$SelUserListt = (data) => {
   const R = Object.assign({ type: 'SelUserList' }, data)
   return request({
@@ -21,7 +10,7 @@ export const API$SelUserListt = (data) => {
   })
 }
 
-// 更新用户信息
+// 更新用户信息(app)
 export const API$UpdUser = (data) => {
   const R = Object.assign({ type: 'UpdUser' }, data)
   return request({
@@ -31,18 +20,8 @@ export const API$UpdUser = (data) => {
   })
 }
 
-// 添加用户信息
-export const API$AddUser = (data) => {
-  const R = Object.assign({ type: 'AddUser' }, data)
-  return request({
-    url: '/YangPanAdmin',
-    method: 'post',
-    data: R
-  })
-}
-
-// 删除用户信息
-export const API$DelUser = (data) => {
+// 删除用户信息(app)
+export const c = (data) => {
   const R = Object.assign({ type: 'DelUser' }, data)
   return request({
     url: '/YangPanAdmin',

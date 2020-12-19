@@ -29,132 +29,132 @@ import Layout from '@/layout'
 常用的路由配置表，无需配置权限显示与否
  */
 export const constantRoutes = [{
-  path: '/login',
-  component: () => import('@/views/login/index'),
-  hidden: true
-},
-
-{
-  path: '/404',
-  component: () => import('@/views/404'),
-  hidden: true
-},
-
-{
-  path: '/',
-  component: Layout,
-  redirect: '/dashboard',
-  children: [{
-    path: 'dashboard',
-    name: 'Dashboard',
-    component: () => import('@/views/dashboard/index'),
-    meta: {
-      title: 'Dashboard',
-      icon: 'dashboard'
-    }
-  }]
-},{
-  path: '/form',
-  component: Layout,
-  children: [{
-    path: 'index',
-    name: 'Form',
-    component: () => import('@/views/form/index'),
-    meta: {
-      title: 'Form',
-      icon: 'form'
-    }
-  }]
-},
-
-{
-  path: '/nested',
-  component: Layout,
-  redirect: '/nested/menu1',
-  name: 'Nested',
-  meta: {
-    title: 'Nested',
-    icon: 'nested'
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
   },
-  children: [{
-    path: 'menu1',
-    component: () => import('@/views/nested/menu1/index'), // Parent router-view
-    name: 'Menu1',
+
+  {
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  },
+
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: {
+        title: 'Dashboard',
+        icon: 'dashboard'
+      }
+    }]
+  }, {
+    path: '/form',
+    component: Layout,
+    children: [{
+      path: 'index',
+      name: 'Form',
+      component: () => import('@/views/form/index'),
+      meta: {
+        title: 'Form',
+        icon: 'form'
+      }
+    }]
+  },
+
+  {
+    path: '/nested',
+    component: Layout,
+    redirect: '/nested/menu1',
+    name: 'Nested',
     meta: {
-      title: 'Menu1'
+      title: 'Nested',
+      icon: 'nested'
     },
     children: [{
-      path: 'menu1-1',
-      component: () => import('@/views/nested/menu1/menu1-1'),
-      name: 'Menu1-1',
-      meta: {
-        title: 'Menu1-1'
-      }
-    },
-    {
-      path: 'menu1-2',
-      component: () => import('@/views/nested/menu1/menu1-2'),
-      name: 'Menu1-2',
-      meta: {
-        title: 'Menu1-2'
-      },
-      children: [{
-        path: 'menu1-2-1',
-        component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-        name: 'Menu1-2-1',
+        path: 'menu1',
+        component: () => import('@/views/nested/menu1/index'), // Parent router-view
+        name: 'Menu1',
         meta: {
-          title: 'Menu1-2-1'
-        }
+          title: 'Menu1'
+        },
+        children: [{
+            path: 'menu1-1',
+            component: () => import('@/views/nested/menu1/menu1-1'),
+            name: 'Menu1-1',
+            meta: {
+              title: 'Menu1-1'
+            }
+          },
+          {
+            path: 'menu1-2',
+            component: () => import('@/views/nested/menu1/menu1-2'),
+            name: 'Menu1-2',
+            meta: {
+              title: 'Menu1-2'
+            },
+            children: [{
+                path: 'menu1-2-1',
+                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
+                name: 'Menu1-2-1',
+                meta: {
+                  title: 'Menu1-2-1'
+                }
+              },
+              {
+                path: 'menu1-2-2',
+                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
+                name: 'Menu1-2-2',
+                meta: {
+                  title: 'Menu1-2-2'
+                }
+              }
+            ]
+          },
+          {
+            path: 'menu1-3',
+            component: () => import('@/views/nested/menu1/menu1-3'),
+            name: 'Menu1-3',
+            meta: {
+              title: 'Menu1-3'
+            }
+          }
+        ]
       },
       {
-        path: 'menu1-2-2',
-        component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-        name: 'Menu1-2-2',
+        path: 'menu2',
+        component: () => import('@/views/nested/menu2/index'),
+        name: 'Menu2',
         meta: {
-          title: 'Menu1-2-2'
+          title: 'menu2'
         }
       }
-      ]
-    },
-    {
-      path: 'menu1-3',
-      component: () => import('@/views/nested/menu1/menu1-3'),
-      name: 'Menu1-3',
-      meta: {
-        title: 'Menu1-3'
-      }
-    }
     ]
   },
+
   {
-    path: 'menu2',
-    component: () => import('@/views/nested/menu2/index'),
-    name: 'Menu2',
-    meta: {
-      title: 'menu2'
-    }
+    path: 'external-link',
+    component: Layout,
+    children: [{
+      path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
+      meta: {
+        title: 'External Link',
+        icon: 'link'
+      }
+    }]
+  },
+
+  // 404 page must be placed at the end !!!
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
   }
-  ]
-},
-
-{
-  path: 'external-link',
-  component: Layout,
-  children: [{
-    path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-    meta: {
-      title: 'External Link',
-      icon: 'link'
-    }
-  }]
-},
-
-// 404 page must be placed at the end !!!
-{
-  path: '*',
-  redirect: '/404',
-  hidden: true
-}
 ]
 
 
@@ -171,23 +171,23 @@ export const asyncRoutes = [
       icon: '3D'
     },
     children: [{
-      path: '/WebGL/ModelList',
-      name: 'ModelList',
-      component: () => import('@/views/WebGl/ModelList'),
-      meta: {
-        title: '模型列表',
-        icon: 'table'
+        path: '/WebGL/ModelList',
+        name: 'ModelList',
+        component: () => import('@/views/WebGl/ModelList'),
+        meta: {
+          title: '模型列表',
+          icon: 'table'
+        }
+      },
+      {
+        path: '/WebGl/ModelShow',
+        name: 'ModelShow',
+        component: () => import('@/views/WebGl/ModelShow'),
+        meta: {
+          title: '模型展示',
+          icon: 'UploadImg'
+        }
       }
-    },
-    {
-      path: '/WebGl/ModelShow',
-      name: 'ModelShow',
-      component: () => import('@/views/WebGl/ModelShow'),
-      meta: {
-        title: '模型展示',
-        icon: 'UploadImg'
-      }
-    }
     ]
   },
 
@@ -202,41 +202,41 @@ export const asyncRoutes = [
       icon: 'quick'
     },
     children: [{
-      path: '/fastTemplate/index',
-      name: 'fastTemplate-index',
-      component: () => import('@/views/fastTemplate/index'),
-      meta: {
-        title: 'fastTemplate-index',
-        icon: 'table'
+        path: '/fastTemplate/index',
+        name: 'fastTemplate-index',
+        component: () => import('@/views/fastTemplate/index'),
+        meta: {
+          title: 'fastTemplate-index',
+          icon: 'table'
+        }
+      },
+      {
+        path: '/fastTemplate/ImgUpload',
+        name: 'fastTemplate-ImgUpload',
+        component: () => import('@/views/fastTemplate/ImgUpload/index'),
+        meta: {
+          title: '图片上传',
+          icon: 'UploadImg'
+        }
+      },
+      {
+        path: '/fastTemplate/formValidate',
+        name: 'fastTemplate-formValidate',
+        component: () => import('@/views/fastTemplate/formValidate/index'),
+        meta: {
+          title: '表单验证',
+          icon: 'formValidate'
+        }
+      },
+      {
+        path: '/fastTemplate/Table',
+        name: 'fastTemplate-Table',
+        component: () => import('@/views/fastTemplate/Table/index'),
+        meta: {
+          title: '表格',
+          icon: 'table'
+        }
       }
-    },
-    {
-      path: '/fastTemplate/ImgUpload',
-      name: 'fastTemplate-ImgUpload',
-      component: () => import('@/views/fastTemplate/ImgUpload/index'),
-      meta: {
-        title: '图片上传',
-        icon: 'UploadImg'
-      }
-    },
-    {
-      path: '/fastTemplate/formValidate',
-      name: 'fastTemplate-formValidate',
-      component: () => import('@/views/fastTemplate/formValidate/index'),
-      meta: {
-        title: '表单验证',
-        icon: 'formValidate'
-      }
-    },
-    {
-      path: '/fastTemplate/Table',
-      name: 'fastTemplate-Table',
-      component: () => import('@/views/fastTemplate/Table/index'),
-      meta: {
-        title: '表格',
-        icon: 'table'
-      }
-    }
     ]
   },
 
@@ -263,7 +263,7 @@ export const asyncRoutes = [
       name: 'UserManager',
       component: () => import('@/views/YangPan/UserManager/UserList'),
       meta: {
-        title: '用户管理',
+        title: '洋盘用户管理',
         icon: 'Users'
       }
     }, {
@@ -274,12 +274,28 @@ export const asyncRoutes = [
         title: '文章管理',
         icon: 'Article'
       }
-    },{
+    }, {
+      path: '/YangPan/AdminUserManager/UserList',
+      name: 'AdminUserManager',
+      component: () => import('@/views/YangPan/AdminUserManager/UserList'),
+      meta: {
+        title: 'admin用户管理',
+        icon: 'Users'
+      }
+    }, {
       path: '/YangPan/AuthorityManager/AuthorityManager',
-      name: 'ArticleManager',
+      name: 'AuthorityManager',
       component: () => import('@/views/YangPan/AuthorityManager/AuthorityManager'),
       meta: {
         title: '权限管理',
+        icon: 'Article'
+      }
+    }, {
+      path: '/YangPan/AuthorityManager/RouterList',
+      name: 'RouterList',
+      component: () => import('@/views/YangPan/AuthorityManager/RouterList'),
+      meta: {
+        title: '路由管理',
         icon: 'Article'
       }
     }]

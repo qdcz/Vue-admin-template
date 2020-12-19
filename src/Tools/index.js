@@ -8,6 +8,18 @@ const create_token = function(leng) {
   }
   return token	// /返回之前使用md5加密一下
 }
+// 生成按日期名字
+let create_timeName = function() {
+	let obj = new Date();
+	let D = {};
+	D['year'] = obj.getFullYear();
+	D['month'] = (obj.getMonth() + 1) >= 10 ? (obj.getMonth() + 1) : "0" + (obj.getMonth() + 1);
+	D['date'] = obj.getDate() >= 10 ? obj.getDate() : "0" + obj.getDate();
+	D['hour'] = obj.getHours() >= 10 ? obj.getHours() : "0" + obj.getHours();
+	D['minute'] = obj.getMinutes() >= 10 ? obj.getMinutes() : "0" + obj.getMinutes();
+	D['second'] = obj.getSeconds() >= 10 ? obj.getSeconds() : "0" + obj.getSeconds();
+	return '' + D.year + D.month + D.date + D.hour + D.minute + D.second
+};
 // 生成时间
 const create_time = function(obj, type) {
   const D = {}
@@ -125,6 +137,7 @@ const comFileSize = (value) => {
 
 export default {
   create_token,
+  create_timeName,
   create_time,
   formatDate,
   getFileType,

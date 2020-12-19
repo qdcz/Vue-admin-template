@@ -1,8 +1,28 @@
 import request from '@/utils/request'
 
-// 添加路由配置表到后端
-export const AddRouter = (data) => {
-  const R = Object.assign({ type: 'AddRouter' }, data)
+// 同步路由配置表到后端
+export const SyncRouter = (data) => {
+  const R = Object.assign({ type: 'SyncRouter' }, data)
+  return request({
+    url: '/YangPanAdmin',
+    method: 'post',
+    data: R
+  })
+}
+
+// 查询路由的全部信息
+export const SelRouter = (data) => {
+  const R = Object.assign({ type: 'SelRouter' }, data)
+  return request({
+    url: '/YangPanAdmin',
+    method: 'post',
+    data: R
+  })
+}
+
+// 添加角色信息
+export const AddRole = (data) => {
+  const R = Object.assign({ type: 'AddRole' }, data)
   return request({
     url: '/YangPanAdmin',
     method: 'post',
@@ -20,11 +40,9 @@ export const GetRoleInfo = (data) => {
   })
 }
 
-
-
-// 获取文章列表
-export const getRoutes = (data) => {
-  const R = Object.assign({ type: 'SelArticleList' }, data)
+// 修改角色信息
+export const UpdRole = (data) => {
+  const R = Object.assign({ type: 'UpdRole' }, data)
   return request({
     url: '/YangPanAdmin',
     method: 'post',
@@ -32,35 +50,9 @@ export const getRoutes = (data) => {
   })
 }
 
-export const getRoles = (data) => {
-  const R = Object.assign({ type: 'SelArticleList' }, data)
-  return request({
-    url: '/YangPanAdmin',
-    method: 'post',
-    data: R
-  })
-}
-
-export const addRole = (data) => {
-  const R = Object.assign({ type: 'SelArticleList' }, data)
-  return request({
-    url: '/YangPanAdmin',
-    method: 'post',
-    data: R
-  })
-}
-
-export const deleteRole = (data) => {
-  const R = Object.assign({ type: 'SelArticleList' }, data)
-  return request({
-    url: '/YangPanAdmin',
-    method: 'post',
-    data: R
-  })
-}
-
-export const updateRole = (data) => {
-  const R = Object.assign({ type: 'SelArticleList' }, data)
+// 删除角色
+export const DelRole = (data) => {
+  const R = Object.assign({ type: 'DelRole' }, data)
   return request({
     url: '/YangPanAdmin',
     method: 'post',
