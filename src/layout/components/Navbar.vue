@@ -55,7 +55,11 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      let a = document.createElement('a')
+      a.href = ''
+      a.click()
+      // window.href=''
+      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
 }

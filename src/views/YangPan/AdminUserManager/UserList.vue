@@ -41,7 +41,7 @@
     <!-- 添加编辑的dialog -->
     <add-dialog :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
 
-    <el-button type="primary" icon="el-icon-search" @click="isshowDialogs=true">添加新用户</el-button>
+    <el-button type="primary" icon="el-icon-plus" @click="isshowDialogs=true">添加新用户</el-button>
     <!-- 表格内容 -->
     <tables class="mt20" :list="DataList" :list-loading.sync="listLoading" :isshow-dialogs.sync="isshowDialogs" :dialog-info.sync="DialogInfo" @updateList="getLists" />
 

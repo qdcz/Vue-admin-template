@@ -245,7 +245,7 @@ export const asyncRoutes = [
     path: '/YangPan',
     component: Layout,
     redirect: '/YangPan/AppUpdate/AppUpdateList',
-    name: 'AppUpdateList',
+    name: 'YangPan',
     meta: {
       title: '洋盘',
       icon: 'YangPan'
@@ -301,20 +301,26 @@ export const asyncRoutes = [
     }]
   }
 ]
+
+
+
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({
     y: 0
   }),
-  routes: constantRoutes.concat(asyncRoutes)
+  // routes: constantRoutes.concat(asyncRoutes)
+  routes: constantRoutes
 })
 
 const router = createRouter()
-
+// router.prototype.$asyncRoutes = asyncRoutes
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
 
-export default router
+export default {
+  router,asyncRoutes
+}

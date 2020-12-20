@@ -3,6 +3,7 @@ import {getToken,setToken,removeToken,
         getSts,setSts,removeSts,
         getUserInfo,setUserInfo,removeUserInfo} from '@/utils/auth'
 import { resetRouter } from '@/router'
+import router from '@/router'
 
 const getDefaultState = () => {
   return {
@@ -71,11 +72,11 @@ const actions = {
         if (!result) {
           return reject('Verification failed, please Login again.')
         }
-        const {name,avatar} = result
+        const {name,avatar,role} = result
         commit('SET_NAME', name?name:"暂未设置")
         commit('SET_AVATAR', avatar?avatar:"https://cdnforspeed.oss-cn-beijing.aliyuncs.com/Img/YangPanAdmin/testImg.jpg")
         setUserInfo(result)
-        resolve()
+        resolve(result)
       }).catch(error => {
         reject(error)
       })
@@ -90,6 +91,7 @@ const actions = {
       removeSts()
       removeUserInfo()
       resolve()
+      // router.router.
     })
   },
 
@@ -112,6 +114,46 @@ const actions = {
       }).catch(error => {
         reject(error)
       })
+    })
+  },
+
+  // 改变路由（后端的路由状态数据处理）
+  ChangeRouter({commit},data){
+    return new Promise(resolve => {
+      let {ServerRouter,LocalRouter} = data
+
+      // 这边做个数据处理，首先根节点的_id肯定是一个哈希值，然后他的子节点我是用日期命名的，所以
+      let filterData = ServerRouter.RouterList.filter((i)=>!(/^[0-9]*$/g).test(i._id))
+
+      // 数据先扁平化下
+      let flatArr = []
+      LocalRouter.forEach(iii=>{
+        let digui = (obj)=>{
+          flatArr.push({name:obj.name,component:obj.component})
+          if(obj.children && obj.children.length>0){
+            obj.children.forEach(jjj=>{
+              digui(jjj)
+            })
+          }
+        }
+        digui(iii)
+      })
+
+      // 进行数据处理
+      filterData.forEach(iii=>{
+        let digui = (obj)=>{
+          flatArr.forEach(i=>{
+            if(i.name===obj.name){obj.component=i.component}
+          })
+          if(obj.children && obj.children.length>0){
+            obj.children.forEach(jjj=>{
+              digui(jjj)
+            })
+          }
+        }
+        digui(iii)
+      })
+      resolve({asyncRoutes:filterData})
     })
   }
 }

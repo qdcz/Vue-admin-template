@@ -58,9 +58,10 @@
       }
       return {
         loginForm: {
-          account: '15892023484',
-          pwd: '123456'
+          account: '',
+          pwd: ''
         },
+        $JSEncrypt:"",
         loginRules: {
           account: [{
             required: true,
@@ -94,11 +95,8 @@
     		MAXSjZwQ03euN5Z7a0v/8H/aXw4OJgzdBPillwaahaUAlpQjJXIlGvslIw93f5uE
     		eNRvG9otLKTBlz+tPwIDAQAB
     		-----END PUBLIC KEY-----`
-      let $JSEncrypt = new JSEncrypt() // 创建实例
-      $JSEncrypt.setPublicKey(pubKey) // 设置公钥
-      this.loginForm.account = $JSEncrypt.encrypt(this.loginForm.account)
-      this.loginForm.pwd = $JSEncrypt.encrypt(this.loginForm.pwd)
-
+      this.$JSEncrypt = new JSEncrypt() // 创建实例
+      this.$JSEncrypt.setPublicKey(pubKey) // 设置公钥
       // this.$store.dispatch('user/register', this.loginForm)
     },
     methods: {
@@ -116,7 +114,10 @@
         this.$refs.loginForm.validate(valid => {
           if (valid) {
             this.loading = true
-            this.$store.dispatch('user/login', this.loginForm).then(() => {
+            this.$store.dispatch('user/login', {
+              account:this.$JSEncrypt.encrypt(this.loginForm.account),
+              pwd:this.$JSEncrypt.encrypt(this.loginForm.pwd)
+            }).then(() => {
               this.$router.push({
                 path: this.redirect || '/'
               })

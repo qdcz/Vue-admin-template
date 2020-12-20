@@ -159,7 +159,7 @@
                 _id:this.role.key,
                 RoleName:this.role.name,
                 RoleDescript:this.role.description,
-                RouterList:this.$refs.tree.getCheckedNodes()
+                RouterList:this.$refs.tree.getCheckedNodes()   // 注意这边存的是选中的节点 要和节点树区别开来，就是取出来的时候要数据处理成节点树
               })
               if(code!==200) return this.$message.error(msg)
               this.$message({message: msg,type: 'success'});
@@ -170,7 +170,7 @@
               let {code,msg} = await AddRole({
                 RoleName:this.role.name,
                 RoleDescript:this.role.description,
-                RouterList:this.$refs.tree.getCheckedNodes()
+                RouterList:this.$refs.tree.getCheckedNodes()  // 注意这边存的是选中的节点 要和节点树区别开来，就是取出来的时候要数据处理成节点树
               })
               if(code!==200) return this.$message.error(msg)
               this.$message({message: msg,type: 'success'});
